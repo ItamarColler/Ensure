@@ -1,0 +1,74 @@
+name: ensure
+
+networks:
+  db-net:
+    internal: true
+  app-net: {}
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    networks: [db-net]
+    environment:
+      POSTGRES_DB: ensure
+      POSTGRES_USER: ensure
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-not-a-real-password}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ensure -d ensure']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: 'no'
+    networks: [db-net]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://ensure:${POSTGRES_PASSWORD:-local-dev-not-a-real-password}@postgres:5432/ensure
+    command: ['pnpm', 'exec', 'drizzle-kit', 'migrate']
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    networks: [db-net, app-net]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgres://ensure:${POSTGRES_PASSWORD:-local-dev-not-a-real-password}@postgres:5432/ensure
+      JWT_SECRET: ${JWT_SECRET:-local-dev-not-a-real-jwt-secret}
+      INSURER_WEBHOOK_URL: ${INSURER_WEBHOOK_URL:-https://insurance-webhook-945894769129.us-central1.run.app}
+      NODE_ENV: production
+
+  caddy:
+    build:
+      context: .
+      dockerfile: deploy/caddy.Dockerfile
+    restart: unless-stopped
+    networks: [app-net]
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      api:
+        condition: service_started
+    environment:
+      PUBLIC_HOSTNAME: ${PUBLIC_HOSTNAME:-http://localhost}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
