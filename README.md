@@ -67,3 +67,56 @@ pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm lint
 ```
+
+## Verification
+
+Replay the acceptance checks a reviewer is most likely to care about.
+
+Cold build — proves the stack builds from nothing, not from a warm layer cache:
+
+```bash
+docker compose down
+docker builder prune -af
+docker compose build --no-cache
+docker compose up -d --wait
+curl -fsS http://localhost/api/health
+```
+
+The response is the shared `Result<T>` envelope. `data.db.healthEvents` is a live `COUNT` taken
+after a real `INSERT`, and `data.insurerWebhook` is the result of a live call to the insurer
+stub's `/health` with a 3 second timeout. A first request made against a cold upstream can report
+`unreachable`; the probe is deliberately allowed to degrade rather than fail the route.
+
+Persistence — proves the `pgdata` named volume survives a restart:
+
+```bash
+curl -fsS http://localhost/api/health
+docker compose down
+docker compose up -d --wait
+curl -fsS http://localhost/api/health
+```
+
+`data.db.healthEvents` after the restart is strictly greater than before it. Note that
+`docker compose down -v` deletes the volume and resets the count to zero by design.
+
+Isolation — proves Postgres is unreachable from the host and that only Caddy publishes ports:
+
+```bash
+docker inspect ensure-postgres-1 --format '{{.HostConfig.PortBindings}}'
+docker network inspect ensure_db-net --format '{{.Internal}}'
+docker compose exec caddy nc -z -w 3 postgres 5432
+```
+
+The port bindings are empty, `db-net` reports `true`, and Caddy cannot even resolve `postgres`
+because it is not attached to `db-net`. A bare `nc -z localhost 5432` from the host is not a
+reliable check: it succeeds on any machine that happens to run its own Postgres, which is a
+different server entirely.
+
+Conventions:
+
+```bash
+corepack enable
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm lint
+```
