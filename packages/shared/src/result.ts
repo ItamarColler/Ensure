@@ -4,7 +4,9 @@ export type ApiErrorCode =
   | 'UNAUTHORIZED'
   | 'CONFLICT'
   | 'UPSTREAM_ERROR'
-  | 'INTERNAL';
+  | 'INTERNAL'
+  | 'VEHICLE_NOT_FOUND'
+  | 'UPSTREAM_TIMEOUT';
 
 export type ApiError =
   | { code: 'VALIDATION_ERROR'; message: string; details?: unknown }
@@ -12,6 +14,8 @@ export type ApiError =
   | { code: 'UNAUTHORIZED'; message: string }
   | { code: 'CONFLICT'; message: string }
   | { code: 'UPSTREAM_ERROR'; message: string }
-  | { code: 'INTERNAL'; message: string };
+  | { code: 'INTERNAL'; message: string }
+  | { code: 'VEHICLE_NOT_FOUND'; message: string }
+  | { code: 'UPSTREAM_TIMEOUT'; message: string };
 
 export type Result<T> = { ok: true; data: T } | { ok: false; error: ApiError };

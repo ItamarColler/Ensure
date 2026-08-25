@@ -1,6 +1,7 @@
 import type { HealthData, Result } from '@ensure/shared';
 import express from 'express';
 
+import { api } from './api';
 import { sendResult } from './http/send-result';
 import { recordHealthCheck } from './repositories/health.repo';
 
@@ -25,6 +26,9 @@ async function probeInsurerWebhook(): Promise<HealthData['insurerWebhook']> {
 }
 
 const app = express();
+
+app.use(express.json());
+app.use('/api', api);
 
 app.get('/api/health', async (_req, res) => {
   const [healthCheck, insurerWebhook] = await Promise.all([

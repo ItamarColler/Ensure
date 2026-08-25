@@ -8,6 +8,8 @@ const errorStatuses: Record<ApiErrorCode, number> = {
   CONFLICT: 409,
   UPSTREAM_ERROR: 502,
   INTERNAL: 500,
+  VEHICLE_NOT_FOUND: 404,
+  UPSTREAM_TIMEOUT: 504,
 };
 
 export function sendResult<T>(res: Response, result: Result<T>): void {
