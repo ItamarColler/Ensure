@@ -1,6 +1,20 @@
 import { healthDataSchema, type HealthData } from '@ensure/shared';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import Alert from '@mui/material/Alert';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { useState, type ReactNode } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+
+import { NumericInline } from './components/NumericInline';
+
+const samplePlate = '12-345-67';
 
 type HealthState =
   | { status: 'idle' }
@@ -15,6 +29,22 @@ function readEnvelopeData(payload: unknown): unknown {
   }
 
   return undefined;
+}
+
+interface StatusRowProps {
+  label: string;
+  children?: ReactNode;
+}
+
+function StatusRow({ label, children }: StatusRowProps) {
+  return (
+    <Stack direction="row" spacing={2} sx={{ justifyContent: 'space-between' }}>
+      <Typography color="text.secondary">{label}</Typography>
+      <Typography component="span" sx={{ fontWeight: 500 }}>
+        {children}
+      </Typography>
+    </Stack>
+  );
 }
 
 export function App() {
@@ -40,52 +70,88 @@ export function App() {
   };
 
   return (
-    <main>
-      <h1>{t('app.title')}</h1>
-      <p>{t('app.subtitle')}</p>
+    <Box sx={{ minBlockSize: '100vh', bgcolor: 'background.default' }}>
+      <AppBar position="static" color="primary" enableColorOnDark>
+        <Toolbar>
+          <Typography variant="h6" component="h1">
+            {t('app.title')}
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-      <section>
-        <h2>{t('systemStatus.label')}</h2>
+      <Container maxWidth="sm" component="main" sx={{ paddingBlock: 4 }}>
+        <Stack spacing={3}>
+          <Typography variant="body1" color="text.secondary">
+            {t('app.subtitle')}
+          </Typography>
 
-        <button
-          type="button"
-          disabled={health.status === 'checking'}
-          onClick={() => {
-            void checkHealth();
-          }}
-        >
-          {t(
-            health.status === 'checking'
-              ? 'systemStatus.checking'
-              : 'systemStatus.checkButton',
-          )}
-        </button>
+          <Paper variant="outlined" sx={{ padding: 3 }}>
+            <Stack spacing={2}>
+              <Typography variant="h6" component="h2">
+                {t('plateSample.heading')}
+              </Typography>
 
-        {health.status === 'healthy' && (
-          <dl>
-            <dt>{t('systemStatus.label')}</dt>
-            <dd>{t('systemStatus.healthy')}</dd>
+              <Typography variant="body1">
+                <Trans
+                  i18nKey="plateSample.sentence"
+                  values={{ plate: samplePlate }}
+                  components={{ ltr: <NumericInline /> }}
+                />
+              </Typography>
 
-            <dt>{t('systemStatus.healthEvents')}</dt>
-            <dd>
-              <bdi dir="ltr">{health.data.db.healthEvents}</bdi>
-            </dd>
+              <Typography variant="body2" color="text.secondary">
+                {t('plateSample.note')}
+              </Typography>
+            </Stack>
+          </Paper>
 
-            <dt>{t('systemStatus.insurerWebhook')}</dt>
-            <dd>
-              {t(
-                health.data.insurerWebhook === 'ok'
-                  ? 'systemStatus.insurerOk'
-                  : 'systemStatus.insurerUnreachable',
+          <Paper variant="outlined" sx={{ padding: 3 }}>
+            <Stack spacing={2}>
+              <Typography variant="h6" component="h2">
+                {t('systemStatus.label')}
+              </Typography>
+
+              <Button
+                variant="contained"
+                disabled={health.status === 'checking'}
+                onClick={() => {
+                  void checkHealth();
+                }}
+              >
+                {t(
+                  health.status === 'checking'
+                    ? 'systemStatus.checking'
+                    : 'systemStatus.checkButton',
+                )}
+              </Button>
+
+              {health.status === 'healthy' && (
+                <Stack spacing={1} divider={<Divider flexItem />}>
+                  <StatusRow label={t('systemStatus.label')}>
+                    {t('systemStatus.healthy')}
+                  </StatusRow>
+
+                  <StatusRow label={t('systemStatus.healthEvents')}>
+                    <NumericInline>{health.data.db.healthEvents}</NumericInline>
+                  </StatusRow>
+
+                  <StatusRow label={t('systemStatus.insurerWebhook')}>
+                    {t(
+                      health.data.insurerWebhook === 'ok'
+                        ? 'systemStatus.insurerOk'
+                        : 'systemStatus.insurerUnreachable',
+                    )}
+                  </StatusRow>
+                </Stack>
               )}
-            </dd>
-          </dl>
-        )}
 
-        {health.status === 'unavailable' && (
-          <p>{t('systemStatus.unavailable')}</p>
-        )}
-      </section>
-    </main>
+              {health.status === 'unavailable' && (
+                <Alert severity="error">{t('systemStatus.unavailable')}</Alert>
+              )}
+            </Stack>
+          </Paper>
+        </Stack>
+      </Container>
+    </Box>
   );
 }
