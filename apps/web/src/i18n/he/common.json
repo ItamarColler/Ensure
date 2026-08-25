@@ -1,0 +1,17 @@
+{
+  "app": {
+    "title": "אנשור",
+    "subtitle": "ביטוח רכב דיגיטלי בעברית"
+  },
+  "systemStatus": {
+    "label": "מצב המערכת",
+    "checkButton": "בדיקת מערכת",
+    "checking": "בודק...",
+    "healthy": "המערכת תקינה",
+    "unavailable": "המערכת אינה זמינה",
+    "healthEvents": "בדיקות שבוצעו",
+    "insurerWebhook": "חיבור למבטח",
+    "insurerOk": "זמין",
+    "insurerUnreachable": "אינו זמין"
+  }
+}
