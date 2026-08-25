@@ -1,4 +1,4 @@
-import { boolean, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 
 export const healthEvents = pgTable('health_events', {
   id: serial('id').primaryKey(),
@@ -6,4 +6,5 @@ export const healthEvents = pgTable('health_events', {
     .defaultNow()
     .notNull(),
   ok: boolean('ok').notNull(),
+  note: text('note'),
 });

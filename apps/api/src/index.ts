@@ -27,7 +27,7 @@ async function probeInsurerWebhook(): Promise<HealthData['insurerWebhook']> {
 const app = express();
 
 app.get('/api/health', async (_req, res) => {
-  const [healthEventCount, insurerWebhook] = await Promise.all([
+  const [healthCheck, insurerWebhook] = await Promise.all([
     recordHealthCheck(),
     probeInsurerWebhook(),
   ]);
@@ -35,7 +35,7 @@ app.get('/api/health', async (_req, res) => {
   const result: Result<HealthData> = {
     ok: true,
     data: {
-      db: { healthEvents: healthEventCount },
+      db: { healthEvents: healthCheck.healthEvents },
       insurerWebhook,
       timestamp: new Date().toISOString(),
     },
