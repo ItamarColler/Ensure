@@ -110,7 +110,7 @@ docker compose down
 docker builder prune -af
 docker compose build --no-cache
 docker compose up -d --wait
-curl -fsS http://localhost/api/health
+curl -fsS -X POST http://localhost/api/health
 ```
 
 The response is the shared `Result<T>` envelope. `data.db.healthEvents` is a live `COUNT` taken
@@ -121,10 +121,10 @@ stub's `/health` with a 3 second timeout. A first request made against a cold up
 Persistence — proves the `pgdata` named volume survives a restart:
 
 ```bash
-curl -fsS http://localhost/api/health
+curl -fsS -X POST http://localhost/api/health
 docker compose down
 docker compose up -d --wait
-curl -fsS http://localhost/api/health
+curl -fsS -X POST http://localhost/api/health
 ```
 
 `data.db.healthEvents` after the restart is strictly greater than before it. Note that
