@@ -5,6 +5,14 @@ through vehicle and coverage selection, a policy gate with minimal authenticatio
 information forms, backed by an Express/TypeScript API, a self-hosted Postgres, and a rule-based
 premium engine.
 
+## Live
+
+<https://164.90.160.169.sslip.io>
+
+A DigitalOcean droplet (fra1, `s-2vcpu-4gb`, Ubuntu 24.04) running the same `docker-compose.yml`
+this repository ships. Caddy terminates TLS with a Let's Encrypt certificate issued for the
+`sslip.io` hostname, which resolves to the droplet's IP with no DNS registration of any kind.
+
 ## Prerequisites
 
 - Docker (Engine 25+ with the Compose v2 plugin)
@@ -58,6 +66,29 @@ reverse-proxies `/api/*` to `api:4000`. `postgres` sits alone on `db-net`, which
 networks: `db-net` to reach Postgres, `app-net` to be reached by Caddy and to keep the outbound
 route it needs for the insurer webhook. Schema changes are applied by a one-shot `migrate`
 service gated on the Postgres healthcheck; `api` does not start until it completes successfully.
+
+## Deployment
+
+The live instance runs this same compose file on one Ubuntu VM, checked out at `/opt/ensure`.
+Real secrets exist only in `/opt/ensure/.env` on that host: `POSTGRES_PASSWORD` and `JWT_SECRET`
+are generated on the VM with `openssl rand -base64 32`, the file is `chmod 600`, and it is
+gitignored — nothing secret is committed or baked into an image. `PUBLIC_HOSTNAME` is set to the
+bare hostname with no scheme, which is what turns Caddy's automatic HTTPS on.
+
+Redeploy after a merge:
+
+```bash
+ssh root@164.90.160.169
+cd /opt/ensure
+git pull
+docker compose up -d --build
+```
+
+`--build` is not optional. Migrations are copied into the api image, so a new migration only
+reaches the database once the image is rebuilt.
+
+Only 22, 80 and 443 answer from the internet. `postgres` and `api` publish no host ports, so
+5432 and 4000 refuse connections from outside the VM.
 
 ## Development
 
