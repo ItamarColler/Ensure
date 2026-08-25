@@ -52,5 +52,12 @@ export default tseslint.config(
     files: ['**/*.mjs', '**/*.js', '**/*.cjs'],
     extends: [tseslint.configs.disableTypeChecked],
   },
+  {
+    files: ['apps/api/src/db/**/*.ts'],
+    rules: {
+      'unicorn/no-null': 'off',
+      '@typescript-eslint/no-restricted-types': 'off',
+    },
+  },
   eslintConfigPrettier,
 );
