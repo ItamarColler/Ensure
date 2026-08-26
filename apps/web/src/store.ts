@@ -2,6 +2,8 @@ import type { CoverageSelection, VehicleInfo } from '@ensure/shared';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { mergePersistedDraft } from './draft-merge';
+
 interface VehicleSlice {
   vehicle: VehicleInfo | undefined;
   setVehicle: (vehicle: VehicleInfo) => void;
@@ -13,7 +15,7 @@ interface CoverageSlice {
   setCoverage: (coverage: CoverageSelection) => void;
 }
 
-type DraftStore = VehicleSlice & CoverageSlice;
+export type DraftStore = VehicleSlice & CoverageSlice;
 
 export const useDraftStore = create<DraftStore>()(
   persist(
@@ -33,6 +35,7 @@ export const useDraftStore = create<DraftStore>()(
       name: 'ensure-draft',
       storage: createJSONStorage(() => sessionStorage),
       version: 1,
+      merge: mergePersistedDraft,
       partialize: (state) => ({
         ...(state.vehicle !== undefined && { vehicle: state.vehicle }),
         ...(state.coverage !== undefined && { coverage: state.coverage }),
