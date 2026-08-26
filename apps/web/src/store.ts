@@ -1,4 +1,4 @@
-import type { VehicleInfo } from '@ensure/shared';
+import type { CoverageSelection, VehicleInfo } from '@ensure/shared';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -7,13 +7,21 @@ interface VehicleSlice {
   setVehicle: (vehicle: VehicleInfo) => void;
 }
 
-type DraftStore = VehicleSlice;
+interface CoverageSlice {
+  coverage?: CoverageSelection;
+  setCoverage: (coverage: CoverageSelection) => void;
+}
+
+type DraftStore = VehicleSlice & CoverageSlice;
 
 export const useDraftStore = create<DraftStore>()(
   persist(
     (set) => ({
       setVehicle: (vehicle) => {
         set({ vehicle });
+      },
+      setCoverage: (coverage) => {
+        set({ coverage });
       },
     }),
     {
@@ -22,6 +30,7 @@ export const useDraftStore = create<DraftStore>()(
       version: 1,
       partialize: (state) => ({
         ...(state.vehicle !== undefined && { vehicle: state.vehicle }),
+        ...(state.coverage !== undefined && { coverage: state.coverage }),
       }),
     },
   ),

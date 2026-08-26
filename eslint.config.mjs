@@ -18,6 +18,7 @@ export default tseslint.config(
     },
     rules: {
       'unicorn/no-null': 'error',
+      'unicorn/no-non-function-verb-prefix': ['error', { ignore: ['^addOn'] }],
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/name-replacements': 'off',
       'unicorn/filename-case': [
