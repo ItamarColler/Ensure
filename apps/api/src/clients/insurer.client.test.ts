@@ -48,13 +48,16 @@ async function startStub(
     throw new Error('stub upstream did not bind a TCP port');
   }
 
+  process.env['INSURER_WEBHOOK_URL'] = `http://127.0.0.1:${String(port)}`;
+  process.env['INSURER_LOOKUP_TIMEOUT_MS'] = String(lookupTimeoutMs);
+
   return {
-    client: new InsurerClient(
-      `http://127.0.0.1:${String(port)}`,
-      lookupTimeoutMs,
-    ),
+    client: new InsurerClient(),
     attempts: () => attempts,
     close: async () => {
+      delete process.env['INSURER_WEBHOOK_URL'];
+      delete process.env['INSURER_LOOKUP_TIMEOUT_MS'];
+
       server.closeAllConnections();
 
       await new Promise<void>((resolve, reject) => {

@@ -1,6 +1,8 @@
 import type { HealthData, Result, VehicleInfo } from '@ensure/shared';
 import { vehicleInfoSchema } from '@ensure/shared';
 
+import { config } from '../config';
+
 type FetchOutcome =
   | { status: 'responded'; response: Response }
   | { status: 'timedOut' }
@@ -29,17 +31,11 @@ function isTimeout(error: unknown): boolean {
 }
 
 export class InsurerClient {
-  constructor(
-    private readonly baseUrl: string,
-    private readonly lookupTimeoutMs = 10_000,
-    private readonly probeTimeoutMs = 3000,
-  ) {}
-
   private async postVehicleInfo(plate: string): Promise<FetchOutcome> {
     try {
-      const response = await fetch(`${this.baseUrl}/vehicle-info`, {
+      const response = await fetch(`${config.insurerWebhookUrl}/vehicle-info`, {
         method: 'POST',
-        signal: AbortSignal.timeout(this.lookupTimeoutMs),
+        signal: AbortSignal.timeout(config.insurerLookupTimeoutMs),
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ license_plate: plate }),
       });
@@ -109,8 +105,8 @@ export class InsurerClient {
 
   async probe(): Promise<HealthData['insurerWebhook']> {
     try {
-      const response = await fetch(`${this.baseUrl}/health`, {
-        signal: AbortSignal.timeout(this.probeTimeoutMs),
+      const response = await fetch(`${config.insurerWebhookUrl}/health`, {
+        signal: AbortSignal.timeout(config.insurerProbeTimeoutMs),
       });
 
       return response.ok ? 'ok' : 'unreachable';
