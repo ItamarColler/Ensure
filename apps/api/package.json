@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test": "node --import tsx --test src/clients/insurer.client.test.ts src/middleware/validate-body.test.ts src/db/nulls-to-undefined.test.ts",
+    "test": "node --import tsx --test src/clients/insurer.client.test.ts src/middleware/validate-body.test.ts src/middleware/terminal-handlers.test.ts src/db/nulls-to-undefined.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

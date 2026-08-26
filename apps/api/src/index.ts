@@ -1,6 +1,4 @@
-import express from 'express';
-
-import { createApi } from './api';
+import { createApp } from './app';
 import { validateConfig } from './config';
 import { routeMounts } from './routers';
 
@@ -8,10 +6,7 @@ const port = 4000;
 
 validateConfig();
 
-const app = express();
-
-app.use(express.json());
-app.use('/api', createApi(routeMounts));
+const app = createApp(routeMounts);
 
 app.listen(port, () => {
   console.log('api listening on port', port);
