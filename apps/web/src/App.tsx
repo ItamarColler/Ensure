@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router';
 
+import { WizardStepper } from './WizardStepper';
+
 export function App() {
   const { t } = useTranslation();
 
@@ -25,6 +27,8 @@ export function App() {
           <Typography variant="body1" color="text.secondary">
             {t('app.subtitle')}
           </Typography>
+
+          <WizardStepper />
 
           <Outlet />
         </Stack>

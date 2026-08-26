@@ -2,5 +2,18 @@
   "app": {
     "title": "אנשור",
     "subtitle": "ביטוח רכב דיגיטלי בעברית"
+  },
+  "steps": {
+    "vehicle": "רכב",
+    "coverage": "כיסוי ביטוחי",
+    "quote": "הצעת מחיר",
+    "register": "הרשמה / כניסה",
+    "details": "פרטים אישיים",
+    "confirmation": "אישור"
+  },
+  "quote": {
+    "title": "סיכום הבחירה שלכם",
+    "vehicleLine": "רכב מספר <ltr>{{plate}}</ltr> — {{manufacturer}} {{model}}, שנת <ltr>{{year}}</ltr>, צבע {{color}}",
+    "coverageTitle": "הכיסוי שנבחר"
   }
 }
