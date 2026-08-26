@@ -8,8 +8,8 @@ import { useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { NumericInline } from './components/NumericInline';
-import { useDraftStore } from './store';
+import { NumericInline } from '../../components/NumericInline';
+import { useDraftStore } from '../../store';
 
 interface VehicleConfirmProps {
   vehicle: VehicleInfo;

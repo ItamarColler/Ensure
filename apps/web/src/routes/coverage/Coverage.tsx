@@ -20,7 +20,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { useDraftStore } from './store';
+import { useDraftStore } from '../../store';
 
 const tierOrder: readonly CoverageTier[] = [
   'compulsory',
@@ -36,7 +36,7 @@ function radioValueFor(tier: CoverageTier | undefined): string {
   return tier ?? '';
 }
 
-export function CoverageForm() {
+export function Coverage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const coverage = useDraftStore((state) => state.coverage);

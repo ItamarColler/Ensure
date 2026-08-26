@@ -16,8 +16,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ApiErrorAlert } from './ApiErrorAlert';
 import { VehicleConfirm } from './VehicleConfirm';
-import { postJson, type ApiErrorException } from './api-client';
-import { useDraftStore } from './store';
+import { postJson, type ApiErrorException } from '../../api-client';
+import { useDraftStore } from '../../store';
 
 function stripPlate(value: string): string {
   return value.replaceAll(/[\s-]/g, '');
@@ -37,7 +37,7 @@ function groupPlate(value: string): string {
   return value;
 }
 
-export function PlateForm() {
+export function Vehicle() {
   const { t } = useTranslation();
   const storedVehicle = useDraftStore((state) => state.vehicle);
   const clearVehicle = useDraftStore((state) => state.clearVehicle);

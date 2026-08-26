@@ -4,10 +4,10 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { NumericInline } from './components/NumericInline';
-import { useDraftStore } from './store';
+import { NumericInline } from '../../components/NumericInline';
+import { useDraftStore } from '../../store';
 
-export function QuoteSummary() {
+export function Quote() {
   const { t } = useTranslation();
   const vehicle = useDraftStore((state) => state.vehicle);
   const coverage = useDraftStore((state) => state.coverage);

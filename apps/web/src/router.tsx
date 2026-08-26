@@ -1,9 +1,9 @@
 import { createBrowserRouter, redirect } from 'react-router';
 
 import { App } from './App';
-import { CoverageForm } from './CoverageForm';
-import { PlateForm } from './PlateForm';
-import { QuoteSummary } from './QuoteSummary';
+import { Coverage } from './routes/coverage/Coverage';
+import { Quote } from './routes/quote/Quote';
+import { Vehicle } from './routes/vehicle/Vehicle';
 import { useDraftStore } from './store';
 
 export const router = createBrowserRouter([
@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
     Component: App,
     children: [
       { index: true, loader: () => redirect('/vehicle') },
-      { path: 'vehicle', Component: PlateForm },
+      { path: 'vehicle', Component: Vehicle },
       {
         path: 'coverage',
         loader: () => {
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
 
           return {};
         },
-        Component: CoverageForm,
+        Component: Coverage,
       },
       {
         path: 'quote',
@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
 
           return {};
         },
-        Component: QuoteSummary,
+        Component: Quote,
       },
     ],
   },
