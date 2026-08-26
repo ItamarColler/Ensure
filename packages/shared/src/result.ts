@@ -6,7 +6,8 @@ export type ApiErrorCode =
   | 'UPSTREAM_ERROR'
   | 'INTERNAL'
   | 'VEHICLE_NOT_FOUND'
-  | 'UPSTREAM_TIMEOUT';
+  | 'UPSTREAM_TIMEOUT'
+  | 'RATE_LIMITED';
 
 export type ApiError =
   | { code: 'VALIDATION_ERROR'; message: string; details?: unknown }
@@ -16,6 +17,7 @@ export type ApiError =
   | { code: 'UPSTREAM_ERROR'; message: string }
   | { code: 'INTERNAL'; message: string }
   | { code: 'VEHICLE_NOT_FOUND'; message: string }
-  | { code: 'UPSTREAM_TIMEOUT'; message: string };
+  | { code: 'UPSTREAM_TIMEOUT'; message: string }
+  | { code: 'RATE_LIMITED'; message: string };
 
 export type Result<T> = { ok: true; data: T } | { ok: false; error: ApiError };

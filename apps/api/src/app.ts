@@ -8,6 +8,7 @@ import { errorHandler, notFoundHandler } from './middleware/terminal-handlers';
 export function createApp(mounts: readonly RouteMount[]): Express {
   const app = express();
 
+  app.set('trust proxy', 1);
   app.use(express.json());
   app.use('/api', createApi(mounts));
   app.use(notFoundHandler);
