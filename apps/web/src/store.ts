@@ -3,8 +3,9 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface VehicleSlice {
-  vehicle?: VehicleInfo;
+  vehicle: VehicleInfo | undefined;
   setVehicle: (vehicle: VehicleInfo) => void;
+  clearVehicle: () => void;
 }
 
 interface CoverageSlice {
@@ -17,8 +18,12 @@ type DraftStore = VehicleSlice & CoverageSlice;
 export const useDraftStore = create<DraftStore>()(
   persist(
     (set) => ({
+      vehicle: undefined,
       setVehicle: (vehicle) => {
         set({ vehicle });
+      },
+      clearVehicle: () => {
+        set({ vehicle: undefined });
       },
       setCoverage: (coverage) => {
         set({ coverage });

@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -18,10 +18,6 @@ import { ApiErrorAlert } from './ApiErrorAlert';
 import { VehicleConfirm } from './VehicleConfirm';
 import { postJson, type ApiErrorException } from './api-client';
 import { useDraftStore } from './store';
-
-type LookupStage =
-  | { phase: 'entry' }
-  | { phase: 'confirm'; vehicle: VehicleInfo; plate: string };
 
 function stripPlate(value: string): string {
   return value.replaceAll(/[\s-]/g, '');
@@ -44,16 +40,7 @@ function groupPlate(value: string): string {
 export function PlateForm() {
   const { t } = useTranslation();
   const storedVehicle = useDraftStore((state) => state.vehicle);
-
-  const [stage, setStage] = useState<LookupStage>(() =>
-    storedVehicle
-      ? {
-          phase: 'confirm',
-          vehicle: storedVehicle,
-          plate: storedVehicle.license_plate,
-        }
-      : { phase: 'entry' },
-  );
+  const clearVehicle = useDraftStore((state) => state.clearVehicle);
 
   const {
     register,
@@ -70,9 +57,6 @@ export function PlateForm() {
 
   const lookup = useMutation<VehicleInfo, ApiErrorException, string>({
     mutationFn: (plate) => postJson<VehicleInfo>('/vehicle/lookup', { plate }),
-    onSuccess: (vehicle, plate) => {
-      setStage({ phase: 'confirm', vehicle, plate });
-    },
   });
 
   const { failureCount } = lookup;
@@ -83,21 +67,25 @@ export function PlateForm() {
     }
   }, [failureCount, setFocus]);
 
-  if (stage.phase === 'confirm') {
+  const submit = handleSubmit((values) => {
+    lookup.mutate(values.plate);
+  });
+
+  const vehicle = lookup.data ?? storedVehicle;
+  const plate = lookup.variables ?? storedVehicle?.license_plate;
+
+  if (vehicle && plate) {
     return (
       <VehicleConfirm
-        vehicle={stage.vehicle}
-        plate={stage.plate}
+        vehicle={vehicle}
+        plate={plate}
         onBack={() => {
-          setStage({ phase: 'entry' });
+          lookup.reset();
+          clearVehicle();
         }}
       />
     );
   }
-
-  const submit = handleSubmit((values) => {
-    lookup.mutate(values.plate);
-  });
 
   return (
     <Stack
@@ -150,7 +138,7 @@ export function PlateForm() {
         <ApiErrorAlert
           error={lookup.error.apiError}
           onRetry={() => {
-            lookup.mutate(stripPlate(getValues('plate')));
+            void submit();
           }}
           retryPending={lookup.isPending}
         />
