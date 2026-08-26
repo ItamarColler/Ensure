@@ -1,0 +1,15 @@
+{
+  "heading": "הזינו את מספר הרישוי",
+  "plateLabel": "מספר רישוי",
+  "lookupCta": "בדוק רכב",
+  "plateFormatInvalid": "מספר הרישוי חייב להכיל 7 או 8 ספרות",
+  "confirmTitle": "אשרו את פרטי הרכב",
+  "confirmForPlate": "פרטי הרכב עבור מספר <ltr>{{plate}}</ltr>",
+  "confirmCta": "אישור פרטי הרכב",
+  "manufacturer": "יצרן",
+  "model": "דגם",
+  "year": "שנת ייצור",
+  "color": "צבע",
+  "fieldRequired": "שדה חובה",
+  "back": "חזרה"
+}

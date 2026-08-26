@@ -2,21 +2,5 @@
   "app": {
     "title": "אנשור",
     "subtitle": "ביטוח רכב דיגיטלי בעברית"
-  },
-  "systemStatus": {
-    "label": "מצב המערכת",
-    "checkButton": "בדיקת מערכת",
-    "checking": "בודק...",
-    "healthy": "המערכת תקינה",
-    "unavailable": "המערכת אינה זמינה",
-    "healthEvents": "בדיקות שבוצעו",
-    "insurerWebhook": "חיבור למבטח",
-    "insurerOk": "זמין",
-    "insurerUnreachable": "אינו זמין"
-  },
-  "plateSample": {
-    "heading": "דוגמה לתצוגת מספר רישוי",
-    "sentence": "מספר הרישוי <ltr>{{plate}}</ltr> נבדק מול מאגר הרכבים של משרד התחבורה.",
-    "note": "הספרות מוצגות משמאל לימין גם בתוך משפט בעברית."
   }
 }

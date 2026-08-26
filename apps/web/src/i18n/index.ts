@@ -2,6 +2,8 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import common from './he/common.json';
+import errors from './he/errors.json';
+import vehicle from './he/vehicle.json';
 
 const languageDirections = { he: 'rtl' } as const;
 
@@ -12,9 +14,9 @@ const activeLanguage: SupportedLanguage = 'he';
 void i18next.use(initReactI18next).init({
   lng: activeLanguage,
   fallbackLng: activeLanguage,
-  ns: ['common'],
+  ns: ['common', 'vehicle', 'errors'],
   defaultNS: 'common',
-  resources: { he: { common } },
+  resources: { he: { common, vehicle, errors } },
   interpolation: { escapeValue: false },
 });
 
