@@ -1,8 +1,10 @@
 import { Router } from 'express';
 
 import { InsurerClient } from './clients/insurer.client';
-import { HealthController } from './routers/health.controller';
-import { VehicleController } from './routers/vehicle.controller';
+import { HealthController } from './controllers/health.controller';
+import { VehicleController } from './controllers/vehicle.controller';
+import { createHealthRouter } from './routers/health.router';
+import { createVehicleRouter } from './routers/vehicle.router';
 import { VehicleService } from './services/vehicle.service';
 
 const insurerWebhookUrl = process.env['INSURER_WEBHOOK_URL'];
@@ -19,8 +21,8 @@ const healthController = new HealthController(insurerClient);
 function createApi(): Router {
   const router = Router();
 
-  router.use('/vehicle', vehicleController.router);
-  router.use('/health', healthController.router);
+  router.use('/vehicle', createVehicleRouter(vehicleController));
+  router.use('/health', createHealthRouter(healthController));
 
   return router;
 }
