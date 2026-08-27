@@ -22,6 +22,13 @@
       "when": 1787836392337,
       "tag": "0002_auth_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787866216109,
+      "tag": "0003_applicant_and_policy_tables",
+      "breakpoints": true
     }
   ]
 }
