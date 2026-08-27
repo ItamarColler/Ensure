@@ -44,7 +44,7 @@ await test('wizardResetPath is the first step', () => {
   assert.equal(wizardResetPath, '/vehicle');
 });
 
-await test('the manifest holds six ordered steps with only the first three implemented', () => {
+await test('the manifest holds six ordered steps with only the first four implemented', () => {
   assert.deepEqual(
     wizardSteps.map((step) => step.key),
     ['vehicle', 'coverage', 'quote', 'register', 'details', 'confirmation'],
@@ -52,7 +52,7 @@ await test('the manifest holds six ordered steps with only the first three imple
 
   assert.deepEqual(
     wizardSteps.map((step) => step.implemented),
-    [true, true, true, false, false, false],
+    [true, true, true, true, false, false],
   );
 });
 

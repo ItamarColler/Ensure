@@ -29,7 +29,7 @@ export const wizardSteps = [
     key: 'register',
     path: '/register',
     requires: ['vehicle', 'coverage'],
-    implemented: false,
+    implemented: true,
   },
   {
     key: 'details',

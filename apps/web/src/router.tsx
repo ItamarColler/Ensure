@@ -4,6 +4,7 @@ import { App } from './App';
 import { AppError } from './AppError';
 import { Coverage } from './routes/coverage/Coverage';
 import { Quote } from './routes/quote/Quote';
+import { Register } from './routes/register/Register';
 import { Vehicle } from './routes/vehicle/Vehicle';
 import { useDraftStore } from './store';
 import { guardRedirectPath, wizardResetPath } from './wizard';
@@ -35,6 +36,11 @@ export const router = createBrowserRouter([
         path: 'quote',
         loader: wizardLoader('/quote'),
         Component: Quote,
+      },
+      {
+        path: 'register',
+        loader: wizardLoader('/register'),
+        Component: Register,
       },
     ],
   },
