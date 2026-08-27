@@ -41,3 +41,24 @@ export interface CoverageSelectionRow {
   coverageType: string;
   options: CoverageOptions;
 }
+
+export interface PolicyApplicantRow {
+  id: string;
+  applicationId: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  nationalId: string;
+  phone: string;
+  driversCount: number;
+  familyStatus: string;
+}
+
+export interface PolicyRow {
+  id: string;
+  applicationId: string;
+  policyNumber: string;
+  premiumAmount: number;
+  status: string;
+  issuedAt: Date;
+}

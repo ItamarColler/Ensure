@@ -5,6 +5,8 @@ import {
   check,
   integer,
   jsonb,
+  numeric,
+  pgSequence,
   pgTable,
   serial,
   smallint,
@@ -85,4 +87,44 @@ export const coverageSelections = pgTable('coverage_selections', {
     .$type<CoverageOptions>()
     .notNull()
     .default({ addOns: [] }),
+});
+
+export const policyNumberSeq = pgSequence('policy_number_seq', {
+  startWith: 100_000,
+});
+
+export const policyApplicants = pgTable('policy_applicants', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  applicationId: uuid('application_id')
+    .notNull()
+    .unique()
+    .references(() => applications.id),
+  firstName: text('first_name').notNull(),
+  lastName: text('last_name').notNull(),
+  address: text('address').notNull(),
+  nationalId: text('national_id').notNull(),
+  phone: text('phone').notNull(),
+  driversCount: integer('drivers_count').notNull(),
+  familyStatus: text('family_status').notNull(),
+});
+
+export const policies = pgTable('policies', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  applicationId: uuid('application_id')
+    .notNull()
+    .unique()
+    .references(() => applications.id),
+  policyNumber: text('policy_number')
+    .notNull()
+    .unique()
+    .default(sql`'POL-' || nextval('policy_number_seq')`),
+  premiumAmount: numeric('premium_amount', {
+    precision: 10,
+    scale: 2,
+    mode: 'number',
+  }).notNull(),
+  status: text('status').notNull().default('pending_review'),
+  issuedAt: timestamp('issued_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });

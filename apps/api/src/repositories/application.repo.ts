@@ -1,7 +1,9 @@
 import type { CoverageSelection, VehicleInfo } from '@ensure/shared';
 import { coverageSelectionSchema, vehicleInfoSchema } from '@ensure/shared';
+import { eq } from 'drizzle-orm';
 
 import type { DbExecutor } from '../db/pool';
+import { db } from '../db/pool';
 import type {
   ApplicationRow,
   CoverageSelectionRow,
@@ -77,6 +79,75 @@ export async function insertDraft(
     coverage: coverageSelectionSchema.parse({
       tier: persistedCoverage.coverageType,
       addOns: persistedCoverage.options.addOns,
+    }),
+  };
+}
+
+export async function findApplicationById(
+  id: string,
+): Promise<ApplicationRow | undefined> {
+  const rows: ApplicationRow[] = await db
+    .select()
+    .from(applications)
+    .where(eq(applications.id, id))
+    .limit(1);
+
+  return rows[0];
+}
+
+export async function markApplicationPendingReview(
+  tx: DbExecutor,
+  applicationId: string,
+): Promise<void> {
+  await tx
+    .update(applications)
+    .set({ status: 'pending_review', stage: 3, updatedAt: new Date() })
+    .where(eq(applications.id, applicationId));
+}
+
+export interface PersistedStageOneDraft {
+  vehicle: VehicleInfo;
+  coverage: CoverageSelection;
+}
+
+export async function findPersistedDraft(
+  applicationId: string,
+): Promise<PersistedStageOneDraft> {
+  const vehicleRows: VehicleRow[] = await db
+    .select()
+    .from(vehicles)
+    .where(eq(vehicles.applicationId, applicationId))
+    .limit(1);
+
+  const vehicleRow = vehicleRows[0];
+
+  if (!vehicleRow) {
+    throw new Error('application has no persisted vehicle');
+  }
+
+  const coverageRows: CoverageSelectionRow[] = await db
+    .select()
+    .from(coverageSelections)
+    .where(eq(coverageSelections.applicationId, applicationId))
+    .limit(1);
+
+  const coverageRow = coverageRows[0];
+
+  if (!coverageRow) {
+    throw new Error('application has no persisted coverage selection');
+  }
+
+  return {
+    vehicle: vehicleInfoSchema.parse({
+      license_plate: vehicleRow.licensePlate,
+      manufacturer: vehicleRow.manufacturer,
+      model: vehicleRow.model,
+      year: vehicleRow.year,
+      color: vehicleRow.color,
+    }),
+    coverage: coverageSelectionSchema.parse({
+      tier: coverageRow.coverageType,
+      addOns: coverageRow.options.addOns,
     }),
   };
 }
