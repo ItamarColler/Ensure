@@ -4,6 +4,7 @@ import { App } from './App';
 import { AppError } from './AppError';
 import { restoreSession, useAuthStore } from './auth-store';
 import { RouteFallback } from './components/RouteFallback';
+import { Confirmation } from './routes/confirmation/Confirmation';
 import { Coverage } from './routes/coverage/Coverage';
 import { Details } from './routes/details/Details';
 import { Register } from './routes/register/Register';
@@ -53,6 +54,12 @@ export const router = createBrowserRouter([
         loader: wizardLoader('/coverage'),
         HydrateFallback: RouteFallback,
         Component: Coverage,
+      },
+      {
+        path: 'confirmation',
+        loader: wizardLoader('/confirmation'),
+        HydrateFallback: RouteFallback,
+        Component: Confirmation,
       },
       {
         path: 'details',

@@ -35,7 +35,7 @@ export const wizardSteps = [
     key: 'confirmation',
     path: '/confirmation',
     requires: ['auth'],
-    implemented: false,
+    implemented: true,
   },
 ] as const satisfies readonly WizardStepShape[];
 
