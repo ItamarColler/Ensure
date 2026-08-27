@@ -60,5 +60,11 @@ export default tseslint.config(
       '@typescript-eslint/no-restricted-types': 'off',
     },
   },
+  {
+    files: ['apps/api/src/routers/**/*.ts'],
+    rules: {
+      'unicorn/no-top-level-side-effects': 'off',
+    },
+  },
   eslintConfigPrettier,
 );

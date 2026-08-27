@@ -4,7 +4,7 @@ import type { Request, Response } from 'express';
 import { sendResult } from '../http/send-result';
 import { vehicleService } from '../services';
 
-export class VehicleController {
+class VehicleController {
   readonly lookup = async (req: Request, res: Response): Promise<void> => {
     const { plate } = req.body as VehicleLookupRequest;
 
@@ -13,3 +13,5 @@ export class VehicleController {
     sendResult(res, result);
   };
 }
+
+export const vehicleController = new VehicleController();
