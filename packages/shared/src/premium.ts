@@ -25,11 +25,11 @@ const midAgeVehicleFactor = 1;
 const agedVehicleFactor = 0.8;
 
 const soleDriverFactor = 1;
-const twoDriverFactor = 1;
-const threeDriverFactor = 1;
-const manyDriverFactor = 1;
+const twoDriverFactor = 1.15;
+const threeDriverFactor = 1.3;
+const manyDriverFactor = 1.5;
 
-const marriedFamilyStatusFactor = 1;
+const marriedFamilyStatusFactor = 0.95;
 const neutralFamilyStatusFactor = 1;
 
 export const FAMILY_STATUS_FACTOR: Record<FamilyStatus, number> = {
