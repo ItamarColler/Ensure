@@ -1,3 +1,4 @@
+import type { FamilyStatus } from './schemas/applicant';
 import type {
   AddOn,
   CoverageSelection,
@@ -17,15 +18,42 @@ export const FLAT_ADDON_PRICES: Record<AddOn, number> = {
   replacementCar: 600,
 };
 
-export const NEUTRAL_DRIVER_COUNT_FACTOR = 1;
-
-export const NEUTRAL_FAMILY_STATUS_FACTOR = 1;
-
 const youngVehicleMaxAge = 2;
 const midAgeVehicleMaxAge = 7;
 const youngVehicleFactor = 1.3;
 const midAgeVehicleFactor = 1;
 const agedVehicleFactor = 0.8;
+
+const soleDriverFactor = 1;
+const twoDriverFactor = 1;
+const threeDriverFactor = 1;
+const manyDriverFactor = 1;
+
+const marriedFamilyStatusFactor = 1;
+const neutralFamilyStatusFactor = 1;
+
+export const FAMILY_STATUS_FACTOR: Record<FamilyStatus, number> = {
+  married: marriedFamilyStatusFactor,
+  single: neutralFamilyStatusFactor,
+  divorced: neutralFamilyStatusFactor,
+  widowed: neutralFamilyStatusFactor,
+};
+
+export function driverCountFactor(driversCount: number): number {
+  if (driversCount <= 1) {
+    return soleDriverFactor;
+  }
+
+  if (driversCount === 2) {
+    return twoDriverFactor;
+  }
+
+  if (driversCount === 3) {
+    return threeDriverFactor;
+  }
+
+  return manyDriverFactor;
+}
 
 export function vehicleAgeFactor(year: number, referenceYear: number): number {
   const age = referenceYear - year;
@@ -55,12 +83,14 @@ export function estimatePremium(
   vehicle: VehicleInfo,
   coverage: CoverageSelection,
   referenceYear: number = new Date().getFullYear(),
+  driversCount = 1,
+  familyStatus: FamilyStatus = 'single',
 ): number {
   return Math.round(
     BASE_PREMIUM_BY_TIER[coverage.tier] *
       vehicleAgeFactor(vehicle.year, referenceYear) *
-      NEUTRAL_DRIVER_COUNT_FACTOR *
-      NEUTRAL_FAMILY_STATUS_FACTOR +
+      driverCountFactor(driversCount) *
+      FAMILY_STATUS_FACTOR[familyStatus] +
       addOnTotal(coverage.addOns),
   );
 }
