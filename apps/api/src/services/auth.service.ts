@@ -3,18 +3,22 @@ import type {
   LoginRequest,
   RegisterRequest,
   Result,
-  SessionUser,
+  SessionResponse,
 } from '@ensure/shared';
 import bcrypt from 'bcryptjs';
 
 import { config } from '../config';
 import { db } from '../db/pool';
-import { insertDraft } from '../repositories/application.repo';
+import {
+  findLatestApplicationByUserId,
+  insertDraft,
+} from '../repositories/application.repo';
 import {
   findUserByEmail,
   findUserById,
   insertUser,
 } from '../repositories/user.repo';
+import { findIssuedPolicy } from './policy-issuance.service';
 
 const uniqueViolationCode = '23505';
 
@@ -26,6 +30,11 @@ const emailTaken: Result<never> = {
 const invalidCredentials: Result<never> = {
   ok: false,
   error: { code: 'UNAUTHORIZED', message: 'invalid email or password' },
+};
+
+const applicationMissing: Result<never> = {
+  ok: false,
+  error: { code: 'NOT_FOUND', message: 'no application' },
 };
 
 const notAuthenticated: Result<never> = {
@@ -122,14 +131,29 @@ export class AuthService {
     });
   }
 
-  async sessionUser(userId: string): Promise<Result<SessionUser>> {
+  async sessionUser(userId: string): Promise<Result<SessionResponse>> {
     const user = await findUserById(userId);
 
     if (!user) {
       return notAuthenticated;
     }
 
-    return { ok: true, data: { id: user.id, email: user.email } };
+    const application = await findLatestApplicationByUserId(userId);
+
+    if (!application) {
+      return applicationMissing;
+    }
+
+    const policy = await findIssuedPolicy(application.id);
+
+    return {
+      ok: true,
+      data: {
+        user: { id: user.id, email: user.email },
+        application: { id: application.id, stage: application.stage },
+        ...(policy !== undefined && { policy }),
+      },
+    };
   }
 }
 

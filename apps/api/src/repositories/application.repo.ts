@@ -1,6 +1,6 @@
 import type { CoverageSelection, VehicleInfo } from '@ensure/shared';
 import { coverageSelectionSchema, vehicleInfoSchema } from '@ensure/shared';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 
 import type { DbExecutor } from '../db/pool';
 import { db } from '../db/pool';
@@ -150,4 +150,17 @@ export async function findPersistedDraft(
       addOns: coverageRow.options.addOns,
     }),
   };
+}
+
+export async function findLatestApplicationByUserId(
+  userId: string,
+): Promise<ApplicationRow | undefined> {
+  const rows: ApplicationRow[] = await db
+    .select()
+    .from(applications)
+    .where(eq(applications.userId, userId))
+    .orderBy(desc(applications.createdAt))
+    .limit(1);
+
+  return rows[0];
 }
