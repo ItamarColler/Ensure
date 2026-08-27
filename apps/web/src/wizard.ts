@@ -1,4 +1,4 @@
-export type WizardPrerequisite = 'vehicle' | 'coverage';
+export type WizardPrerequisite = 'vehicle' | 'coverage' | 'auth';
 
 export type WizardDraftSnapshot = Readonly<
   Partial<Record<WizardPrerequisite, unknown>>
@@ -28,13 +28,13 @@ export const wizardSteps = [
   {
     key: 'details',
     path: '/details',
-    requires: ['vehicle', 'coverage'],
+    requires: ['vehicle', 'coverage', 'auth'],
     implemented: false,
   },
   {
     key: 'confirmation',
     path: '/confirmation',
-    requires: ['vehicle', 'coverage'],
+    requires: ['auth'],
     implemented: false,
   },
 ] as const satisfies readonly WizardStepShape[];
@@ -49,9 +49,13 @@ export function stepIndex(pathname: string): number | undefined {
   return index === -1 ? undefined : index;
 }
 
-function stepPathFor(key: WizardPrerequisite): string | undefined {
-  return wizardSteps.find((step) => step.key === key)?.path;
-}
+const prerequisiteRedirects: Record<WizardPrerequisite, string> = {
+  vehicle: '/vehicle',
+  coverage: '/coverage',
+  auth: '/register',
+};
+
+const sealPath = '/confirmation';
 
 export function guardRedirectPath(
   pathname: string,
@@ -73,7 +77,18 @@ export function guardRedirectPath(
     (requirement) => snapshot[requirement] === undefined,
   );
 
-  return missing === undefined ? undefined : stepPathFor(missing);
+  return missing === undefined ? undefined : prerequisiteRedirects[missing];
+}
+
+export function sealRedirectPath(
+  pathname: string,
+  hasIssuedPolicy: boolean,
+): string | undefined {
+  if (!hasIssuedPolicy || pathname === sealPath) {
+    return undefined;
+  }
+
+  return stepIndex(pathname) === undefined ? undefined : sealPath;
 }
 
 export function nextStepPath(pathname: string): string | undefined {

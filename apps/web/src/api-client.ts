@@ -27,7 +27,7 @@ function toApiError(payload: unknown): ApiError {
 
 const csrfCookiePrefix = 'csrf=';
 
-function readCsrfCookie(): string | undefined {
+export function readCsrfCookie(): string | undefined {
   for (const cookie of document.cookie.split('; ')) {
     if (cookie.startsWith(csrfCookiePrefix)) {
       return cookie.slice(csrfCookiePrefix.length);
