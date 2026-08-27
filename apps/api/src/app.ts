@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import type { Express } from 'express';
 
@@ -10,6 +11,7 @@ export function createApp(mounts: readonly RouteMount[]): Express {
 
   app.set('trust proxy', 1);
   app.use(express.json());
+  app.use(cookieParser());
   app.use('/api', createApi(mounts));
   app.use(notFoundHandler);
   app.use(errorHandler);

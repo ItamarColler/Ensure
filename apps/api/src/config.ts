@@ -33,9 +33,19 @@ export const config = {
   get databaseUrl(): string {
     return requiredString('DATABASE_URL');
   },
+  get jwtSecret(): string {
+    return requiredString('JWT_SECRET');
+  },
+  get bcryptCost(): number {
+    return optionalNumber('BCRYPT_COST', 10);
+  },
+  get cookieSecure(): boolean {
+    return process.env['NODE_ENV'] === 'production';
+  },
 };
 
 export function validateConfig(): void {
   void config.insurerWebhookUrl;
   void config.databaseUrl;
+  void config.jwtSecret;
 }

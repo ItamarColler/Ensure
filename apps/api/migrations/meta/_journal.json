@@ -15,6 +15,13 @@
       "when": 1787652674998,
       "tag": "0001_married_paladin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787836392337,
+      "tag": "0002_auth_tables",
+      "breakpoints": true
     }
   ]
 }

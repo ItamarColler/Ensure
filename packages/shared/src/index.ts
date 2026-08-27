@@ -1,20 +1,5 @@
-export type { ApiError, ApiErrorCode, Result } from './result';
-export {
-  addOnSchema,
-  coverageSelectionSchema,
-  coverageTierSchema,
-  tierAddOnMap,
-} from './schemas/coverage';
-export type {
-  AddOn,
-  CoverageSelection,
-  CoverageTier,
-} from './schemas/coverage';
-export { healthDataSchema } from './schemas/health';
-export type { HealthData } from './schemas/health';
-export {
-  plateSchema,
-  vehicleInfoSchema,
-  vehicleLookupRequestSchema,
-} from './schemas/vehicle';
-export type { VehicleInfo, VehicleLookupRequest } from './schemas/vehicle';
+export * from './result';
+export * from './schemas/auth';
+export * from './schemas/coverage';
+export * from './schemas/health';
+export * from './schemas/vehicle';
