@@ -1,3 +1,4 @@
+import { estimatePremium } from '@ensure/shared';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -6,6 +7,12 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { NumericInline } from '../../components/NumericInline';
 import { useDraftStore } from '../../store';
+
+const premiumFormatter = new Intl.NumberFormat('he-IL', {
+  style: 'currency',
+  currency: 'ILS',
+  maximumFractionDigits: 0,
+});
 
 export function Quote() {
   const { t } = useTranslation();
@@ -60,6 +67,24 @@ export function Quote() {
             ))}
           </Stack>
         )}
+
+        <Divider />
+
+        <Stack spacing={1}>
+          <Typography variant="body1">
+            {t('auth:estimatedPremiumLabel')}
+          </Typography>
+
+          <Typography variant="h5" component="p">
+            <NumericInline>
+              {premiumFormatter.format(estimatePremium(vehicle, coverage))}
+            </NumericInline>
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary">
+            {t('auth:estimatedPremiumCaption')}
+          </Typography>
+        </Stack>
       </Stack>
     </Paper>
   );

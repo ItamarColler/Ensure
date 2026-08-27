@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import auth from './he/auth.json';
 import common from './he/common.json';
 import coverage from './he/coverage.json';
 import errors from './he/errors.json';
@@ -15,9 +16,9 @@ const activeLanguage: SupportedLanguage = 'he';
 void i18next.use(initReactI18next).init({
   lng: activeLanguage,
   fallbackLng: activeLanguage,
-  ns: ['common', 'vehicle', 'errors', 'coverage'],
+  ns: ['common', 'vehicle', 'errors', 'coverage', 'auth'],
   defaultNS: 'common',
-  resources: { he: { common, vehicle, errors, coverage } },
+  resources: { he: { common, vehicle, errors, coverage, auth } },
   interpolation: { escapeValue: false },
 });
 
