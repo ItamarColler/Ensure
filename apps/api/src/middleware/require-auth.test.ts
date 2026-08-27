@@ -23,6 +23,7 @@ interface ResponseFake {
 interface Invocation {
   captured: CapturedResponse;
   handledUserIds: string[];
+  nextCalls: number;
 }
 
 const unauthorizedPayload = {
@@ -56,7 +57,11 @@ function invoke(cookies: Record<string, string>): Invocation {
   });
 
   const request = { cookies } as unknown as Request;
-  const next: NextFunction = () => undefined;
+  let nextCalls = 0;
+
+  const next: NextFunction = () => {
+    nextCalls += 1;
+  };
 
   middleware(
     request,
@@ -64,13 +69,14 @@ function invoke(cookies: Record<string, string>): Invocation {
     next,
   );
 
-  return { captured, handledUserIds };
+  return { captured, handledUserIds, nextCalls };
 }
 
 await test('a request without a token cookie never reaches the handler', () => {
   const invocation = invoke({});
 
   assert.deepEqual(invocation.handledUserIds, []);
+  assert.equal(invocation.nextCalls, 0);
   assert.equal(invocation.captured.status, 401);
   assert.deepEqual(invocation.captured.payload, unauthorizedPayload);
 });
@@ -79,6 +85,7 @@ await test('a garbage token is rejected with the same envelope', () => {
   const invocation = invoke({ token: 'not-a-json-web-token' });
 
   assert.deepEqual(invocation.handledUserIds, []);
+  assert.equal(invocation.nextCalls, 0);
   assert.equal(invocation.captured.status, 401);
   assert.deepEqual(invocation.captured.payload, unauthorizedPayload);
 });
@@ -92,6 +99,7 @@ await test('an expired token is rejected with the same envelope', () => {
   const invocation = invoke({ token: expired });
 
   assert.deepEqual(invocation.handledUserIds, []);
+  assert.equal(invocation.nextCalls, 0);
   assert.equal(invocation.captured.status, 401);
   assert.deepEqual(invocation.captured.payload, unauthorizedPayload);
 });
@@ -102,6 +110,7 @@ await test('a token signed for another secret is rejected', () => {
   const invocation = invoke({ token: foreign });
 
   assert.deepEqual(invocation.handledUserIds, []);
+  assert.equal(invocation.nextCalls, 0);
   assert.equal(invocation.captured.status, 401);
 });
 
@@ -111,6 +120,7 @@ await test('a token carrying no subject is rejected', () => {
   const invocation = invoke({ token: subjectless });
 
   assert.deepEqual(invocation.handledUserIds, []);
+  assert.equal(invocation.nextCalls, 0);
   assert.equal(invocation.captured.status, 401);
 });
 
@@ -123,6 +133,7 @@ await test('a valid token calls the handler once with its subject', () => {
   const invocation = invoke({ token });
 
   assert.deepEqual(invocation.handledUserIds, ['user-1']);
+  assert.equal(invocation.nextCalls, 0);
   assert.equal(invocation.captured.status, undefined);
   assert.equal(invocation.captured.payload, undefined);
 });

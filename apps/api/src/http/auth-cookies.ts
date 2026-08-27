@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 
-import type { CookieOptions, Response } from 'express';
+import type { CookieOptions, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { config } from '../config';
@@ -29,6 +29,26 @@ function csrfCookieOptions(): CookieOptions {
     path: csrfCookiePath,
     secure: config.cookieSecure,
   };
+}
+
+function readCookie(req: Request, name: string): string | undefined {
+  const cookies: unknown = req.cookies;
+
+  if (typeof cookies !== 'object' || !cookies) {
+    return undefined;
+  }
+
+  const value = (cookies as Record<string, unknown>)[name];
+
+  return typeof value === 'string' ? value : undefined;
+}
+
+export function readTokenCookie(req: Request): string | undefined {
+  return readCookie(req, tokenCookieName);
+}
+
+export function readCsrfCookie(req: Request): string | undefined {
+  return readCookie(req, csrfCookieName);
 }
 
 export function setAuthCookies(res: Response, userId: string): void {
