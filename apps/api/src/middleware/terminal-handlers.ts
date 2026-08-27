@@ -3,6 +3,27 @@ import type { NextFunction, Request, RequestHandler, Response } from 'express';
 
 import { sendResult } from '../http/send-result';
 
+const redactedParams = '[redacted]';
+
+function hasBoundParameters(error: unknown): boolean {
+  return error instanceof Error && 'params' in error;
+}
+
+function redactBoundParameters(error: unknown): unknown {
+  if (!hasBoundParameters(error)) {
+    return error;
+  }
+
+  const { name, message } = error as Error;
+
+  return {
+    name,
+    message: message.split('\nparams:', 1)[0],
+    params: redactedParams,
+    cause: redactBoundParameters((error as Error).cause),
+  };
+}
+
 function isClientBodyError(error: unknown): boolean {
   return (
     error instanceof Error &&
@@ -43,7 +64,7 @@ export function errorHandler(
     return;
   }
 
-  console.error(error);
+  console.error(redactBoundParameters(error));
 
   const internal: Result<never> = {
     ok: false,
