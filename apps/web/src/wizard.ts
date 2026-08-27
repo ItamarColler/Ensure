@@ -20,12 +20,6 @@ export const wizardSteps = [
     implemented: true,
   },
   {
-    key: 'quote',
-    path: '/quote',
-    requires: ['vehicle', 'coverage'],
-    implemented: true,
-  },
-  {
     key: 'register',
     path: '/register',
     requires: ['vehicle', 'coverage'],

@@ -10,11 +10,11 @@ import {
   wizardSteps,
 } from './wizard';
 
-await test('stepIndex resolves each implemented path and the register path by order', () => {
+await test('stepIndex resolves each implemented path in order up to the register gate', () => {
   assert.equal(stepIndex('/vehicle'), 0);
   assert.equal(stepIndex('/coverage'), 1);
-  assert.equal(stepIndex('/quote'), 2);
-  assert.equal(stepIndex('/register'), 3);
+  assert.equal(stepIndex('/register'), 2);
+  assert.equal(stepIndex('/quote'), undefined);
 });
 
 await test('stepIndex resolves an unknown pathname to undefined', () => {
@@ -22,12 +22,12 @@ await test('stepIndex resolves an unknown pathname to undefined', () => {
   assert.equal(stepIndex(''), undefined);
 });
 
-await test('guardRedirectPath reproduces the Phase 02 redirect chain exactly', () => {
+await test('guardRedirectPath reproduces the redirect chain up to the register gate', () => {
   assert.equal(guardRedirectPath('/coverage', {}), '/vehicle');
-  assert.equal(guardRedirectPath('/quote', {}), '/vehicle');
-  assert.equal(guardRedirectPath('/quote', { vehicle: {} }), '/coverage');
+  assert.equal(guardRedirectPath('/register', {}), '/vehicle');
+  assert.equal(guardRedirectPath('/register', { vehicle: {} }), '/coverage');
   assert.equal(
-    guardRedirectPath('/quote', { vehicle: {}, coverage: {} }),
+    guardRedirectPath('/register', { vehicle: {}, coverage: {} }),
     undefined,
   );
   assert.equal(guardRedirectPath('/vehicle', {}), undefined);
@@ -35,8 +35,9 @@ await test('guardRedirectPath reproduces the Phase 02 redirect chain exactly', (
 
 await test('adjacent step derivations walk the manifest in both directions', () => {
   assert.equal(nextStepPath('/vehicle'), '/coverage');
-  assert.equal(nextStepPath('/coverage'), '/quote');
+  assert.equal(nextStepPath('/coverage'), '/register');
   assert.equal(previousStepPath('/coverage'), '/vehicle');
+  assert.equal(previousStepPath('/register'), '/coverage');
   assert.equal(previousStepPath('/vehicle'), undefined);
 });
 
@@ -44,15 +45,15 @@ await test('wizardResetPath is the first step', () => {
   assert.equal(wizardResetPath, '/vehicle');
 });
 
-await test('the manifest holds six ordered steps with only the first four implemented', () => {
+await test('the manifest holds five ordered steps with only the first three implemented', () => {
   assert.deepEqual(
     wizardSteps.map((step) => step.key),
-    ['vehicle', 'coverage', 'quote', 'register', 'details', 'confirmation'],
+    ['vehicle', 'coverage', 'register', 'details', 'confirmation'],
   );
 
   assert.deepEqual(
     wizardSteps.map((step) => step.implemented),
-    [true, true, true, true, false, false],
+    [true, true, true, false, false],
   );
 });
 
