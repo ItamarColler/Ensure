@@ -6,7 +6,6 @@ import {
   type CoverageTier,
 } from '@ensure/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -18,9 +17,11 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
+import { WizardActions } from '../../components/WizardActions';
 import { useDraftStore } from '../../store';
+import { nextStepPath } from '../../wizard';
 
 const tierOrder: readonly CoverageTier[] = [
   'compulsory',
@@ -39,6 +40,7 @@ function radioValueFor(tier: CoverageTier | undefined): string {
 export function Coverage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const coverage = useDraftStore((state) => state.coverage);
   const setCoverage = useDraftStore((state) => state.setCoverage);
 
@@ -58,7 +60,12 @@ export function Coverage() {
 
   const submit = handleSubmit((values) => {
     setCoverage(values);
-    void navigate('/quote');
+
+    const target = nextStepPath(pathname);
+
+    if (target) {
+      void navigate(target);
+    }
   });
 
   return (
@@ -190,22 +197,7 @@ export function Coverage() {
         </Stack>
       )}
 
-      <Stack spacing={1}>
-        <Button type="submit" variant="contained" fullWidth>
-          {t('coverage:cta')}
-        </Button>
-
-        <Button
-          type="button"
-          variant="text"
-          onClick={() => {
-            void navigate('/vehicle');
-          }}
-          sx={{ color: 'text.secondary' }}
-        >
-          {t('vehicle:back')}
-        </Button>
-      </Stack>
+      <WizardActions submitLabel={t('coverage:cta')} />
     </Stack>
   );
 }

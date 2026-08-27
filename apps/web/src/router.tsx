@@ -6,6 +6,17 @@ import { Coverage } from './routes/coverage/Coverage';
 import { Quote } from './routes/quote/Quote';
 import { Vehicle } from './routes/vehicle/Vehicle';
 import { useDraftStore } from './store';
+import { guardRedirectPath, wizardResetPath } from './wizard';
+
+const wizardLoader = (pathname: string) => () => {
+  const target = guardRedirectPath(pathname, useDraftStore.getState());
+
+  if (target !== undefined) {
+    return redirect(target);
+  }
+
+  return {};
+};
 
 export const router = createBrowserRouter([
   {
@@ -13,34 +24,16 @@ export const router = createBrowserRouter([
     Component: App,
     ErrorBoundary: AppError,
     children: [
-      { index: true, loader: () => redirect('/vehicle') },
+      { index: true, loader: () => redirect(wizardResetPath) },
       { path: 'vehicle', Component: Vehicle },
       {
         path: 'coverage',
-        loader: () => {
-          if (!useDraftStore.getState().vehicle) {
-            return redirect('/vehicle');
-          }
-
-          return {};
-        },
+        loader: wizardLoader('/coverage'),
         Component: Coverage,
       },
       {
         path: 'quote',
-        loader: () => {
-          const { vehicle, coverage } = useDraftStore.getState();
-
-          if (!vehicle) {
-            return redirect('/vehicle');
-          }
-
-          if (!coverage) {
-            return redirect('/coverage');
-          }
-
-          return {};
-        },
+        loader: wizardLoader('/quote'),
         Component: Quote,
       },
     ],

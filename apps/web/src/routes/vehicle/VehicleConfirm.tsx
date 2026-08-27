@@ -1,15 +1,16 @@
 import { vehicleInfoSchema, type VehicleInfo } from '@ensure/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 import { NumericInline } from '../../components/NumericInline';
+import { WizardActions } from '../../components/WizardActions';
 import { useDraftStore } from '../../store';
+import { nextStepPath } from '../../wizard';
 
 interface VehicleConfirmProps {
   vehicle: VehicleInfo;
@@ -24,6 +25,7 @@ export function VehicleConfirm({
 }: VehicleConfirmProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const setVehicle = useDraftStore((state) => state.setVehicle);
 
   const {
@@ -37,7 +39,12 @@ export function VehicleConfirm({
 
   const submit = handleSubmit((values) => {
     setVehicle({ ...values, license_plate: vehicle.license_plate });
-    void navigate('/coverage');
+
+    const target = nextStepPath(pathname);
+
+    if (target) {
+      void navigate(target);
+    }
   });
 
   return (
@@ -93,20 +100,7 @@ export function VehicleConfirm({
         helperText={errors.color && t('vehicle:fieldRequired')}
       />
 
-      <Stack spacing={1}>
-        <Button type="submit" variant="contained" fullWidth>
-          {t('vehicle:confirmCta')}
-        </Button>
-
-        <Button
-          type="button"
-          variant="text"
-          onClick={onBack}
-          sx={{ color: 'text.secondary' }}
-        >
-          {t('vehicle:back')}
-        </Button>
-      </Stack>
+      <WizardActions submitLabel={t('vehicle:confirmCta')} onBack={onBack} />
     </Stack>
   );
 }

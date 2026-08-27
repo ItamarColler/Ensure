@@ -4,8 +4,6 @@ import {
   type VehicleLookupRequest,
 } from '@ensure/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -14,9 +12,10 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { ApiErrorAlert } from './ApiErrorAlert';
 import { VehicleConfirm } from './VehicleConfirm';
 import { postJson, type ApiErrorException } from '../../api-client';
+import { ApiErrorAlert } from '../../components/ApiErrorAlert';
+import { PendingButton } from '../../components/PendingButton';
 import { useDraftStore } from '../../store';
 
 function stripPlate(value: string): string {
@@ -121,18 +120,14 @@ export function Vehicle() {
         helperText={errors.plate && t('vehicle:plateFormatInvalid')}
       />
 
-      <Button
+      <PendingButton
         type="submit"
         variant="contained"
         fullWidth
-        disabled={lookup.isPending}
+        pending={lookup.isPending}
       >
-        {lookup.isPending ? (
-          <CircularProgress size={20} color="inherit" />
-        ) : (
-          t('vehicle:lookupCta')
-        )}
-      </Button>
+        {t('vehicle:lookupCta')}
+      </PendingButton>
 
       {lookup.error && (
         <ApiErrorAlert
