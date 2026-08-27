@@ -49,11 +49,15 @@ await test('the register request requires terms to be accepted', () => {
     false,
   );
   assert.equal(
-    registerRequestSchema.safeParse(registerRequest({ termsAccepted: undefined }))
-      .success,
+    registerRequestSchema.safeParse(
+      registerRequest({ termsAccepted: undefined }),
+    ).success,
     false,
   );
-  assert.equal(registerRequestSchema.safeParse(registerRequest({})).success, true);
+  assert.equal(
+    registerRequestSchema.safeParse(registerRequest({})).success,
+    true,
+  );
 });
 
 await test('the register form schema accepts a boolean terms field but refines it to true', () => {

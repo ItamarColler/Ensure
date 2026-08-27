@@ -39,7 +39,10 @@ await test('a nearly new compulsory policy applies the young-vehicle surcharge',
 });
 
 await test('an old third party policy applies the aged-vehicle discount before add-ons', () => {
-  const coverage: CoverageSelection = { tier: 'thirdParty', addOns: ['towing'] };
+  const coverage: CoverageSelection = {
+    tier: 'thirdParty',
+    addOns: ['towing'],
+  };
 
   assert.equal(
     estimatePremium(vehicleOfYear(2010), coverage, referenceYear),

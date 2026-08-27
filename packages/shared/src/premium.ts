@@ -1,4 +1,8 @@
-import type { AddOn, CoverageSelection, CoverageTier } from './schemas/coverage';
+import type {
+  AddOn,
+  CoverageSelection,
+  CoverageTier,
+} from './schemas/coverage';
 import type { VehicleInfo } from './schemas/vehicle';
 
 export const BASE_PREMIUM_BY_TIER: Record<CoverageTier, number> = {
