@@ -43,9 +43,17 @@ const notAuthenticated: Result<never> = {
 };
 
 function isUniqueViolation(error: unknown): boolean {
-  return (
-    error instanceof Error && Reflect.get(error, 'code') === uniqueViolationCode
-  );
+  let current: unknown = error;
+
+  while (current instanceof Error) {
+    if (Reflect.get(current, 'code') === uniqueViolationCode) {
+      return true;
+    }
+
+    current = current.cause;
+  }
+
+  return false;
 }
 
 export class AuthService {
