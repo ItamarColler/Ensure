@@ -50,5 +50,6 @@
     "phoneInvalid": "מספר הטלפון הנייד אינו תקין. הזינו מספר ישראלי המתחיל ב־<ltr>05</ltr>",
     "driversCountRequired": "יש לבחור מספר נהגים",
     "familyStatusRequired": "יש לבחור מצב משפחתי"
-  }
+  },
+  "blankHelper": " "
 }

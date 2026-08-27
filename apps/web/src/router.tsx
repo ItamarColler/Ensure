@@ -5,6 +5,7 @@ import { AppError } from './AppError';
 import { restoreSession, useAuthStore } from './auth-store';
 import { RouteFallback } from './components/RouteFallback';
 import { Coverage } from './routes/coverage/Coverage';
+import { Details } from './routes/details/Details';
 import { Register } from './routes/register/Register';
 import { Vehicle } from './routes/vehicle/Vehicle';
 import { useDraftStore } from './store';
@@ -52,6 +53,12 @@ export const router = createBrowserRouter([
         loader: wizardLoader('/coverage'),
         HydrateFallback: RouteFallback,
         Component: Coverage,
+      },
+      {
+        path: 'details',
+        loader: wizardLoader('/details'),
+        HydrateFallback: RouteFallback,
+        Component: Details,
       },
       {
         path: 'register',
