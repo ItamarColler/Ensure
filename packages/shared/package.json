@@ -12,10 +12,15 @@
     }
   },
   "scripts": {
+    "test": "node --import tsx --test 'src/**/*.test.ts'",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "type-fest": "5.8.0",
     "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "tsx": "4.23.12"
   }
 }
