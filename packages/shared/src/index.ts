@@ -1,3 +1,4 @@
+export * from './premium';
 export * from './result';
 export * from './schemas/auth';
 export * from './schemas/coverage';
