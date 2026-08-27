@@ -5,14 +5,10 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { CurrencyInline } from '../../components/CurrencyInline';
 import { NumericInline } from '../../components/NumericInline';
+import { premiumFormatter } from '../../premium-format';
 import { useDraftStore } from '../../store';
-
-const premiumFormatter = new Intl.NumberFormat('he-IL', {
-  style: 'currency',
-  currency: 'ILS',
-  maximumFractionDigits: 0,
-});
 
 export function Quote() {
   const { t } = useTranslation();
@@ -76,9 +72,9 @@ export function Quote() {
           </Typography>
 
           <Typography variant="h5" component="p">
-            <NumericInline>
+            <CurrencyInline>
               {premiumFormatter.format(estimatePremium(vehicle, coverage))}
-            </NumericInline>
+            </CurrencyInline>
           </Typography>
 
           <Typography variant="body2" color="text.secondary">

@@ -1,0 +1,24 @@
+{
+  "title": "הבקשה שלכם התקבלה",
+  "subtitle": "הפוליסה הונפקה וממתינה לבדיקת חתם.",
+  "policyNumberLabel": "מספר פוליסה",
+  "summaryTitle": "פרטי הפוליסה",
+  "statusLabel": "סטטוס",
+  "statusPendingReview": "ממתין לבדיקה",
+  "premiumLabel": "המחיר השנתי",
+  "premiumNote": "הסכום ייגבה לאחר אישור החיתום. נעדכן אתכם בדוא\"ל.",
+  "contactTitle": "פרטי הקשר של המבטח",
+  "contactCompany": "אנשור ביטוח בע\"מ",
+  "contactPhoneLabel": "טלפון",
+  "contactPhone": "03-7654321",
+  "contactEmailLabel": "דוא\"ל",
+  "contactEmail": "service@ensure.example",
+  "contactHoursLabel": "שעות פעילות",
+  "contactHours": "ימים א׳–ה׳, <ltr>08:00–18:00</ltr>",
+  "contactPlaceholderNote": "פרטי הקשר להדגמה בלבד.",
+  "absent": {
+    "title": "לא נמצאה פוליסה להצגה",
+    "body": "לא מצאנו פוליסה שהונפקה במכשיר הזה. אם כבר שלחתם בקשה, נעדכן אתכם בדוא\"ל.",
+    "cta": "התחלת בקשה חדשה"
+  }
+}

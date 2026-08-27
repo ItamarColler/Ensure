@@ -1,0 +1,54 @@
+{
+  "title": "הפרטים האישיים שלכם",
+  "subtitle": "עוד כמה פרטים, ואפשר להנפיק את הפוליסה.",
+  "groups": {
+    "identity": "פרטים מזהים",
+    "contact": "פרטי התקשרות",
+    "risk": "נתוני הנהיגה"
+  },
+  "firstNameLabel": "שם פרטי",
+  "lastNameLabel": "שם משפחה",
+  "nationalIdLabel": "תעודת זהות",
+  "nationalIdHint": "9 ספרות, כולל ספרת ביקורת",
+  "phoneLabel": "טלפון נייד",
+  "phoneHint": "מספר ישראלי, לדוגמה <ltr>050-1234567</ltr>",
+  "addressLabel": "כתובת מלאה",
+  "addressHint": "רחוב, מספר בית ועיר",
+  "driversCountLabel": "מספר הנהגים ברכב",
+  "driversCount": {
+    "1": "נהג/ת אחד/ת",
+    "2": "שני נהגים",
+    "3": "שלושה נהגים",
+    "4": "ארבעה נהגים ומעלה"
+  },
+  "familyStatusLabel": "מצב משפחתי",
+  "familyStatus": {
+    "single": "רווק/ה",
+    "married": "נשוי/אה",
+    "divorced": "גרוש/ה",
+    "widowed": "אלמן/ה"
+  },
+  "cta": "הנפקת פוליסה",
+  "summary": {
+    "title": "ההצעה שלכם",
+    "vehicleRow": "רכב",
+    "modelRow": "דגם",
+    "coverageRow": "כיסוי",
+    "addOnsRow": "כיסויים נוספים",
+    "driversRow": "נהגים",
+    "familyStatusRow": "מצב משפחתי",
+    "premiumLabel": "מחיר משוער",
+    "premiumNote": "האומדן מתעדכן לפי הפרטים שתמלאו. המחיר הסופי ייקבע לאחר אישור הבקשה.",
+    "barLabel": "סה״כ לשנה · אומדן"
+  },
+  "pendingRowPlaceholder": "—",
+  "errors": {
+    "firstNameRequired": "יש להזין שם פרטי",
+    "lastNameRequired": "יש להזין שם משפחה",
+    "addressRequired": "יש להזין כתובת מלאה",
+    "nationalIdLength": "מספר תעודת זהות חייב להכיל 9 ספרות",
+    "phoneInvalid": "מספר הטלפון הנייד אינו תקין. הזינו מספר ישראלי המתחיל ב־<ltr>05</ltr>",
+    "driversCountRequired": "יש לבחור מספר נהגים",
+    "familyStatusRequired": "יש לבחור מצב משפחתי"
+  }
+}
