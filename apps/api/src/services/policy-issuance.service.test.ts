@@ -72,3 +72,11 @@ await test('an error that is not a unique violation is rethrown unchanged', asyn
     thrown,
   );
 });
+
+await test('a unique violation wrapped by the driver is unwrapped through cause', async () => {
+  const wrapped = new Error('Failed query', { cause: errorWithCode('23505') });
+
+  const result = await replayOrRethrow(wrapped, applicationId, lookupIssued);
+
+  assert.deepEqual(result, { ok: true, data: issuedPolicy });
+});
