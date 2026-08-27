@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { coverageSelectionSchema } from './coverage';
+import { policyIssuedResponseSchema } from './policy';
 import { vehicleInfoSchema } from './vehicle';
 
 export const authCredentialsSchema = z.object({
@@ -39,6 +40,17 @@ export const authResponseSchema = z.object({
   coverage: coverageSelectionSchema,
 });
 
+export const sessionApplicationSchema = z.object({
+  id: z.string(),
+  stage: z.number().int(),
+});
+
+export const sessionResponseSchema = z.object({
+  user: sessionUserSchema,
+  application: sessionApplicationSchema,
+  policy: policyIssuedResponseSchema.optional(),
+});
+
 export type AuthCredentials = z.infer<typeof authCredentialsSchema>;
 
 export type RegisterFormValues = z.infer<typeof registerFormSchema>;
@@ -52,3 +64,7 @@ export type LoginRequest = z.infer<typeof loginRequestSchema>;
 export type SessionUser = z.infer<typeof sessionUserSchema>;
 
 export type AuthResponse = z.infer<typeof authResponseSchema>;
+
+export type SessionApplication = z.infer<typeof sessionApplicationSchema>;
+
+export type SessionResponse = z.infer<typeof sessionResponseSchema>;
