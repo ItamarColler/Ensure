@@ -130,3 +130,5 @@ async function readVehicleInfo(
     return undefined;
   }
 }
+
+export const insurerClient = new InsurerClient();

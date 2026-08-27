@@ -69,7 +69,11 @@ await test('the twenty-first request in a window is rejected with a 429 envelope
   for (let attempt = 1; attempt <= 20; attempt += 1) {
     const allowed = invoke(middleware, clientA);
 
-    assert.equal(allowed.nextCalls, 1, `request ${String(attempt)} was blocked`);
+    assert.equal(
+      allowed.nextCalls,
+      1,
+      `request ${String(attempt)} was blocked`,
+    );
     assert.equal(allowed.captured.status, undefined);
   }
 
@@ -95,7 +99,11 @@ await test('an exhausted budget for one ip leaves another ip its own full budget
   for (let attempt = 1; attempt <= 20; attempt += 1) {
     const allowed = invoke(middleware, clientB);
 
-    assert.equal(allowed.nextCalls, 1, `request ${String(attempt)} was blocked`);
+    assert.equal(
+      allowed.nextCalls,
+      1,
+      `request ${String(attempt)} was blocked`,
+    );
   }
 
   assert.equal(invoke(middleware, clientB).captured.status, 429);
@@ -103,7 +111,11 @@ await test('an exhausted budget for one ip leaves another ip its own full budget
 
 await test('the window slides — expiry frees the budget, a partial advance does not', () => {
   let clock = 0;
-  const middleware = rateLimit({ limit: 2, windowMs: 60_000, now: () => clock });
+  const middleware = rateLimit({
+    limit: 2,
+    windowMs: 60_000,
+    now: () => clock,
+  });
 
   assert.equal(invoke(middleware, clientA).nextCalls, 1);
   clock = 10_000;

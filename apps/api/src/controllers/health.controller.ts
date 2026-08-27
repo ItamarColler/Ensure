@@ -1,7 +1,7 @@
 import type { HealthData, Result } from '@ensure/shared';
 import type { Request, Response } from 'express';
 
-import { insurerClient } from '../clients';
+import { insurerClient } from '../clients/insurer.client';
 import { sendResult } from '../http/send-result';
 import { recordHealthCheck } from '../repositories/health.repo';
 

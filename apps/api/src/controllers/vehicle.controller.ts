@@ -2,7 +2,7 @@ import type { VehicleLookupRequest } from '@ensure/shared';
 import type { Request, Response } from 'express';
 
 import { sendResult } from '../http/send-result';
-import { vehicleService } from '../services';
+import { vehicleService } from '../services/vehicle.service';
 
 class VehicleController {
   readonly lookup = async (req: Request, res: Response): Promise<void> => {
