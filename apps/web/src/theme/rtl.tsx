@@ -16,6 +16,41 @@ const theme = createTheme({
   typography: {
     fontFamily: ['Heebo', 'system-ui', 'sans-serif'].join(', '),
   },
+  palette: {
+    grey: { 100: '#EEF4F1' },
+  },
+  components: {
+    MuiTextField: {
+      defaultProps: { size: 'small', variant: 'outlined', fullWidth: true },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          minBlockSize: 40,
+          boxSizing: 'border-box',
+          '&:has(.MuiSelect-select)': { minBlockSize: 44 },
+        },
+        input: { fontSize: 16, lineHeight: 1.4 },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: { root: { minBlockSize: 44, fontSize: 16 } },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: { minBlockSize: 44 },
+        contained: { minBlockSize: 48 },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: { root: { fontSize: 16 } },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: { fontSize: 14, fontWeight: 700, marginBlockStart: 4 },
+      },
+    },
+  },
 });
 
 interface RtlRootProps {
