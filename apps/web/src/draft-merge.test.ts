@@ -13,9 +13,12 @@ function unexercisedAction(): never {
 function currentDraft(): DraftStore {
   return {
     vehicle: undefined,
+    applicationId: undefined,
     setVehicle: unexercisedAction,
     clearVehicle: unexercisedAction,
     setCoverage: unexercisedAction,
+    setApplicationId: unexercisedAction,
+    clearDraft: unexercisedAction,
   };
 }
 
@@ -86,4 +89,43 @@ await test('a coverage slice violating the tier add-on refine is dropped', () =>
   );
 
   assert.equal(Object.hasOwn(merged, 'coverage'), false);
+});
+
+await test('a persisted applicationId string survives the merge', () => {
+  const merged = mergePersistedDraft(
+    {
+      vehicle: validVehicle,
+      coverage: validCoverage,
+      applicationId: 'ad5f1c0e-0000-4000-8000-000000000000',
+    },
+    currentDraft(),
+  );
+
+  assert.equal(merged.applicationId, 'ad5f1c0e-0000-4000-8000-000000000000');
+});
+
+await test('a persisted applicationId that is not a string is dropped without throwing', () => {
+  const current = currentDraft();
+
+  for (const applicationId of [42, {}, [], true, '']) {
+    assert.doesNotThrow(() => {
+      mergePersistedDraft({ applicationId }, current);
+    });
+
+    assert.equal(
+      mergePersistedDraft({ applicationId }, current).applicationId,
+      undefined,
+    );
+  }
+});
+
+await test('an absent applicationId leaves the other slices untouched', () => {
+  const merged = mergePersistedDraft(
+    { vehicle: validVehicle, coverage: validCoverage },
+    currentDraft(),
+  );
+
+  assert.equal(merged.applicationId, undefined);
+  assert.deepEqual(merged.vehicle, validVehicle);
+  assert.deepEqual(merged.coverage, validCoverage);
 });

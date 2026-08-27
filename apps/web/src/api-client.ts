@@ -25,13 +25,29 @@ function toApiError(payload: unknown): ApiError {
   return upstreamUnreachable;
 }
 
+const csrfCookiePrefix = 'csrf=';
+
+function readCsrfCookie(): string | undefined {
+  for (const cookie of document.cookie.split('; ')) {
+    if (cookie.startsWith(csrfCookiePrefix)) {
+      return cookie.slice(csrfCookiePrefix.length);
+    }
+  }
+
+  return undefined;
+}
+
 export async function postJson<T>(path: string, body: unknown): Promise<T> {
+  const csrf = readCsrfCookie();
   let payload: unknown;
 
   try {
     const response = await fetch(`/api${path}`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        ...(csrf !== undefined && { 'x-csrf-token': csrf }),
+      },
       body: JSON.stringify(body),
     });
 

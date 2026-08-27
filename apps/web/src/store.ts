@@ -11,16 +11,23 @@ interface VehicleSlice {
 }
 
 interface CoverageSlice {
-  coverage?: CoverageSelection;
+  coverage?: CoverageSelection | undefined;
   setCoverage: (coverage: CoverageSelection) => void;
 }
 
-export type DraftStore = VehicleSlice & CoverageSlice;
+interface ApplicationSlice {
+  applicationId: string | undefined;
+  setApplicationId: (applicationId: string) => void;
+  clearDraft: () => void;
+}
+
+export type DraftStore = VehicleSlice & CoverageSlice & ApplicationSlice;
 
 export const useDraftStore = create<DraftStore>()(
   persist(
     (set) => ({
       vehicle: undefined,
+      applicationId: undefined,
       setVehicle: (vehicle) => {
         set({ vehicle });
       },
@@ -29,6 +36,16 @@ export const useDraftStore = create<DraftStore>()(
       },
       setCoverage: (coverage) => {
         set({ coverage });
+      },
+      setApplicationId: (applicationId) => {
+        set({ applicationId });
+      },
+      clearDraft: () => {
+        set({
+          vehicle: undefined,
+          coverage: undefined,
+          applicationId: undefined,
+        });
       },
     }),
     {
@@ -39,6 +56,9 @@ export const useDraftStore = create<DraftStore>()(
       partialize: (state) => ({
         ...(state.vehicle !== undefined && { vehicle: state.vehicle }),
         ...(state.coverage !== undefined && { coverage: state.coverage }),
+        ...(state.applicationId !== undefined && {
+          applicationId: state.applicationId,
+        }),
       }),
     },
   ),
