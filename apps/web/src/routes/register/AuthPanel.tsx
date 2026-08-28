@@ -9,6 +9,7 @@ import {
 } from '@ensure/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -21,6 +22,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router';
 
 import { ApiErrorException, postJson } from '../../api-client';
 import { useAuthStore } from '../../auth-store';
@@ -28,6 +30,7 @@ import { ApiErrorAlert } from '../../components/ApiErrorAlert';
 import { NumericInline } from '../../components/NumericInline';
 import { PendingButton } from '../../components/PendingButton';
 import { useDraftStore } from '../../store';
+import { nextStepPath } from '../../wizard';
 
 type AuthMode = 'register' | 'login';
 
@@ -49,13 +52,24 @@ function stageOneDraft(): StageOneDraft {
   return { vehicle, coverage };
 }
 
-function adoptAuthResponse(data: AuthResponse): void {
-  const draft = useDraftStore.getState();
+function useAdoptAuthResponse(): (data: AuthResponse) => void {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  draft.setVehicle(data.vehicle);
-  draft.setCoverage(data.coverage);
-  draft.setApplicationId(data.applicationId);
-  useAuthStore.getState().setUser(data.user);
+  return (data: AuthResponse) => {
+    const draft = useDraftStore.getState();
+
+    draft.setVehicle(data.vehicle);
+    draft.setCoverage(data.coverage);
+    draft.setApplicationId(data.applicationId);
+    useAuthStore.getState().setUser(data.user);
+
+    const target = nextStepPath(pathname);
+
+    if (target) {
+      void navigate(target);
+    }
+  };
 }
 
 interface RegisterFormProps {
@@ -63,6 +77,7 @@ interface RegisterFormProps {
 }
 
 function RegisterForm({ onConflict }: RegisterFormProps) {
+  const adoptAuthResponse = useAdoptAuthResponse();
   const { t } = useTranslation();
 
   const {
@@ -109,100 +124,112 @@ function RegisterForm({ onConflict }: RegisterFormProps) {
   return (
     <Stack
       component="form"
-      spacing={3}
       noValidate
+      sx={{ flex: 1, minBlockSize: 0 }}
       onSubmit={(event) => {
         void submit(event);
       }}
     >
-      <TextField
-        label={t('auth:emailLabel')}
-        fullWidth
-        autoComplete="email"
-        disabled={submitRegister.isPending}
-        slotProps={{ htmlInput: { dir: 'ltr', inputMode: 'email' } }}
-        {...register('email')}
-        error={errors.email !== undefined}
-        helperText={errors.email && t('auth:emailInvalid')}
-      />
+      <Box
+        sx={{
+          flex: 1,
+          minBlockSize: 0,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Stack spacing={6} sx={{ marginBlock: 'auto', inlineSize: '100%' }}>
+          <TextField
+            label={t('auth:emailLabel')}
+            fullWidth
+            autoComplete="email"
+            disabled={submitRegister.isPending}
+            slotProps={{ htmlInput: { dir: 'ltr', inputMode: 'email' } }}
+            {...register('email')}
+            error={errors.email !== undefined}
+            helperText={errors.email && t('auth:emailInvalid')}
+          />
 
-      <TextField
-        label={t('auth:passwordLabel')}
-        type="password"
-        fullWidth
-        autoComplete="new-password"
-        disabled={submitRegister.isPending}
-        slotProps={{ htmlInput: { dir: 'ltr' } }}
-        {...register('password')}
-        error={errors.password !== undefined}
-        helperText={errors.password && t('auth:passwordTooShort')}
-      />
+          <TextField
+            label={t('auth:passwordLabel')}
+            type="password"
+            fullWidth
+            autoComplete="new-password"
+            disabled={submitRegister.isPending}
+            slotProps={{ htmlInput: { dir: 'ltr' } }}
+            {...register('password')}
+            error={errors.password !== undefined}
+            helperText={errors.password && t('auth:passwordTooShort')}
+          />
 
-      <Stack>
-        <Controller
-          name="termsAccepted"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name={field.name}
-                  checked={field.value}
-                  onBlur={field.onBlur}
-                  onChange={(event) => {
-                    field.onChange(event.target.checked);
-                  }}
+          <Stack>
+            <Controller
+              name="termsAccepted"
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name={field.name}
+                      checked={field.value}
+                      onBlur={field.onBlur}
+                      onChange={(event) => {
+                        field.onChange(event.target.checked);
+                      }}
+                    />
+                  }
+                  label={t('auth:termsLabel')}
                 />
-              }
-              label={t('auth:termsLabel')}
+              )}
+            />
+
+            {errors.termsAccepted && (
+              <FormHelperText error>{t('auth:termsRequired')}</FormHelperText>
+            )}
+
+            <Controller
+              name="marketingOptIn"
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name={field.name}
+                      checked={field.value}
+                      onBlur={field.onBlur}
+                      onChange={(event) => {
+                        field.onChange(event.target.checked);
+                      }}
+                    />
+                  }
+                  label={t('auth:marketingLabel')}
+                />
+              )}
+            />
+          </Stack>
+
+          {submitRegister.error && (
+            <ApiErrorAlert
+              error={submitRegister.error.apiError}
+              onRetry={() => {
+                void submit();
+              }}
+              retryPending={submitRegister.isPending}
             />
           )}
-        />
-
-        {errors.termsAccepted && (
-          <FormHelperText error>{t('auth:termsRequired')}</FormHelperText>
-        )}
-
-        <Controller
-          name="marketingOptIn"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name={field.name}
-                  checked={field.value}
-                  onBlur={field.onBlur}
-                  onChange={(event) => {
-                    field.onChange(event.target.checked);
-                  }}
-                />
-              }
-              label={t('auth:marketingLabel')}
-            />
-          )}
-        />
-      </Stack>
+        </Stack>
+      </Box>
 
       <PendingButton
         type="submit"
         variant="contained"
         fullWidth
         pending={submitRegister.isPending}
-        sx={{ minBlockSize: 44 }}
+        sx={{ minBlockSize: 44, flex: '0 0 auto', marginBlockStart: 6 }}
       >
         {t('auth:registerCta')}
       </PendingButton>
-
-      {submitRegister.error && (
-        <ApiErrorAlert
-          error={submitRegister.error.apiError}
-          onRetry={() => {
-            void submit();
-          }}
-          retryPending={submitRegister.isPending}
-        />
-      )}
     </Stack>
   );
 }
@@ -212,6 +239,7 @@ interface LoginFormProps {
 }
 
 function LoginForm({ conflictEmail }: LoginFormProps) {
+  const adoptAuthResponse = useAdoptAuthResponse();
   const { t } = useTranslation();
 
   const {
@@ -245,64 +273,76 @@ function LoginForm({ conflictEmail }: LoginFormProps) {
   return (
     <Stack
       component="form"
-      spacing={3}
       noValidate
+      sx={{ flex: 1, minBlockSize: 0 }}
       onSubmit={(event) => {
         void submit(event);
       }}
     >
-      {conflictEmail !== undefined && (
-        <Alert severity="info">
-          <Trans
-            i18nKey="auth:emailAlreadyRegistered"
-            values={{ email: conflictEmail }}
-            components={{ ltr: <NumericInline /> }}
+      <Box
+        sx={{
+          flex: 1,
+          minBlockSize: 0,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Stack spacing={6} sx={{ marginBlock: 'auto', inlineSize: '100%' }}>
+          {conflictEmail !== undefined && (
+            <Alert severity="info">
+              <Trans
+                i18nKey="auth:emailAlreadyRegistered"
+                values={{ email: conflictEmail }}
+                components={{ ltr: <NumericInline /> }}
+              />
+            </Alert>
+          )}
+
+          <TextField
+            label={t('auth:emailLabel')}
+            fullWidth
+            autoComplete="email"
+            disabled={submitLogin.isPending}
+            slotProps={{ htmlInput: { dir: 'ltr', inputMode: 'email' } }}
+            {...register('email')}
+            error={errors.email !== undefined}
+            helperText={errors.email && t('auth:emailInvalid')}
           />
-        </Alert>
-      )}
 
-      <TextField
-        label={t('auth:emailLabel')}
-        fullWidth
-        autoComplete="email"
-        disabled={submitLogin.isPending}
-        slotProps={{ htmlInput: { dir: 'ltr', inputMode: 'email' } }}
-        {...register('email')}
-        error={errors.email !== undefined}
-        helperText={errors.email && t('auth:emailInvalid')}
-      />
+          <TextField
+            label={t('auth:passwordLabel')}
+            type="password"
+            fullWidth
+            autoComplete="current-password"
+            disabled={submitLogin.isPending}
+            slotProps={{ htmlInput: { dir: 'ltr' } }}
+            {...register('password')}
+            error={errors.password !== undefined}
+            helperText={errors.password && t('auth:passwordTooShort')}
+          />
 
-      <TextField
-        label={t('auth:passwordLabel')}
-        type="password"
-        fullWidth
-        autoComplete="current-password"
-        disabled={submitLogin.isPending}
-        slotProps={{ htmlInput: { dir: 'ltr' } }}
-        {...register('password')}
-        error={errors.password !== undefined}
-        helperText={errors.password && t('auth:passwordTooShort')}
-      />
+          {submitLogin.error && (
+            <ApiErrorAlert
+              error={submitLogin.error.apiError}
+              onRetry={() => {
+                void submit();
+              }}
+              retryPending={submitLogin.isPending}
+            />
+          )}
+        </Stack>
+      </Box>
 
       <PendingButton
         type="submit"
         variant="contained"
         fullWidth
         pending={submitLogin.isPending}
-        sx={{ minBlockSize: 44 }}
+        sx={{ minBlockSize: 44, flex: '0 0 auto', marginBlockStart: 6 }}
       >
         {t('auth:loginCta')}
       </PendingButton>
-
-      {submitLogin.error && (
-        <ApiErrorAlert
-          error={submitLogin.error.apiError}
-          onRetry={() => {
-            void submit();
-          }}
-          retryPending={submitLogin.isPending}
-        />
-      )}
     </Stack>
   );
 }
@@ -315,8 +355,16 @@ export function AuthPanel() {
   );
 
   return (
-    <Paper variant="outlined" sx={{ padding: 3 }}>
-      <Stack spacing={3}>
+    <Paper
+      variant="outlined"
+      sx={{
+        padding: 3,
+        blockSize: 380,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Stack spacing={6} sx={{ flex: 1, minBlockSize: 0 }}>
         <Tabs
           value={mode}
           variant="fullWidth"

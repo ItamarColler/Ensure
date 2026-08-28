@@ -89,8 +89,9 @@ export function Vehicle() {
   return (
     <Stack
       component="form"
-      spacing={3}
+      spacing={4.75}
       noValidate
+      sx={{ paddingInline: { xs: 0, sm: '15%' } }}
       onSubmit={(event) => {
         void submit(event);
       }}

@@ -1,9 +1,18 @@
-import { coverageSelectionSchema, vehicleInfoSchema } from '@ensure/shared';
+import {
+  applicantContactSchema,
+  applicantIdentitySchema,
+  applicantRiskSchema,
+  coverageSelectionSchema,
+  vehicleInfoSchema,
+} from '@ensure/shared';
 
 import type { DraftStore } from './store';
 
 type PersistedSlices = Partial<
-  Record<'vehicle' | 'coverage' | 'applicationId', unknown>
+  Record<
+    'vehicle' | 'coverage' | 'applicationId' | 'identity' | 'contact' | 'risk',
+    unknown
+  >
 >;
 
 export function mergePersistedDraft(
@@ -14,6 +23,9 @@ export function mergePersistedDraft(
   const vehicle = vehicleInfoSchema.safeParse(slices?.vehicle);
   const coverage = coverageSelectionSchema.safeParse(slices?.coverage);
   const applicationId = slices?.applicationId;
+  const identity = applicantIdentitySchema.safeParse(slices?.identity);
+  const contact = applicantContactSchema.safeParse(slices?.contact);
+  const risk = applicantRiskSchema.safeParse(slices?.risk);
 
   return {
     ...current,
@@ -21,5 +33,8 @@ export function mergePersistedDraft(
     ...(coverage.success && { coverage: coverage.data }),
     ...(typeof applicationId === 'string' &&
       applicationId.length > 0 && { applicationId }),
+    ...(identity.success && { identity: identity.data }),
+    ...(contact.success && { contact: contact.data }),
+    ...(risk.success && { risk: risk.data }),
   };
 }

@@ -71,8 +71,9 @@ export function Coverage() {
   return (
     <Stack
       component="form"
-      spacing={4}
+      spacing={2.25}
       noValidate
+      sx={{ paddingInline: { xs: 0, sm: '5%' } }}
       onSubmit={(event) => {
         void submit(event);
       }}

@@ -5,12 +5,20 @@ import { AppError } from './AppError';
 import { restoreSession, useAuthStore } from './auth-store';
 import { RouteFallback } from './components/RouteFallback';
 import { Confirmation } from './routes/confirmation/Confirmation';
+import { Contact } from './routes/contact/Contact';
+import { Driving } from './routes/driving/Driving';
+import { Personal } from './routes/personal/Personal';
 import { Coverage } from './routes/coverage/Coverage';
-import { Details } from './routes/details/Details';
 import { Register } from './routes/register/Register';
 import { Vehicle } from './routes/vehicle/Vehicle';
 import { useDraftStore } from './store';
-import { guardRedirectPath, sealRedirectPath, wizardResetPath } from './wizard';
+import {
+  guardRedirectPath,
+  nextStepPath,
+  sealRedirectPath,
+  wizardPrerequisiteSnapshot,
+  wizardResetPath,
+} from './wizard';
 
 const wizardLoader = (pathname: string) => async () => {
   await restoreSession();
@@ -23,14 +31,27 @@ const wizardLoader = (pathname: string) => async () => {
   }
 
   const draft = useDraftStore.getState();
-  const target = guardRedirectPath(pathname, {
-    vehicle: draft.vehicle,
-    coverage: draft.coverage,
-    auth: auth.user,
-  });
+  const target = guardRedirectPath(
+    pathname,
+    wizardPrerequisiteSnapshot({
+      vehicle: draft.vehicle,
+      coverage: draft.coverage,
+      auth: auth.user,
+      identity: draft.identity,
+      contact: draft.contact,
+    }),
+  );
 
   if (target !== undefined) {
     return redirect(target);
+  }
+
+  if (pathname === '/register' && auth.user !== undefined) {
+    const forward = nextStepPath(pathname);
+
+    if (forward !== undefined) {
+      return redirect(forward);
+    }
   }
 
   return {};
@@ -62,10 +83,22 @@ export const router = createBrowserRouter([
         Component: Confirmation,
       },
       {
-        path: 'details',
-        loader: wizardLoader('/details'),
+        path: 'personal',
+        loader: wizardLoader('/personal'),
         HydrateFallback: RouteFallback,
-        Component: Details,
+        Component: Personal,
+      },
+      {
+        path: 'contact',
+        loader: wizardLoader('/contact'),
+        HydrateFallback: RouteFallback,
+        Component: Contact,
+      },
+      {
+        path: 'driving',
+        loader: wizardLoader('/driving'),
+        HydrateFallback: RouteFallback,
+        Component: Driving,
       },
       {
         path: 'register',

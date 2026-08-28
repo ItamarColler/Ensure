@@ -1,4 +1,10 @@
-import type { CoverageSelection, VehicleInfo } from '@ensure/shared';
+import type {
+  ApplicantContact,
+  ApplicantIdentity,
+  ApplicantRisk,
+  CoverageSelection,
+  VehicleInfo,
+} from '@ensure/shared';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -15,13 +21,25 @@ interface CoverageSlice {
   setCoverage: (coverage: CoverageSelection) => void;
 }
 
+interface ApplicantSlice {
+  identity?: ApplicantIdentity | undefined;
+  contact?: ApplicantContact | undefined;
+  risk?: ApplicantRisk | undefined;
+  setIdentity: (identity: ApplicantIdentity) => void;
+  setContact: (contact: ApplicantContact) => void;
+  setRisk: (risk: ApplicantRisk) => void;
+}
+
 interface ApplicationSlice {
   applicationId: string | undefined;
   setApplicationId: (applicationId: string) => void;
   clearDraft: () => void;
 }
 
-export type DraftStore = VehicleSlice & CoverageSlice & ApplicationSlice;
+export type DraftStore = VehicleSlice &
+  CoverageSlice &
+  ApplicantSlice &
+  ApplicationSlice;
 
 export const useDraftStore = create<DraftStore>()(
   persist(
@@ -40,11 +58,23 @@ export const useDraftStore = create<DraftStore>()(
       setApplicationId: (applicationId) => {
         set({ applicationId });
       },
+      setIdentity: (identity) => {
+        set({ identity });
+      },
+      setContact: (contact) => {
+        set({ contact });
+      },
+      setRisk: (risk) => {
+        set({ risk });
+      },
       clearDraft: () => {
         set({
           vehicle: undefined,
           coverage: undefined,
           applicationId: undefined,
+          identity: undefined,
+          contact: undefined,
+          risk: undefined,
         });
       },
     }),
@@ -59,6 +89,9 @@ export const useDraftStore = create<DraftStore>()(
         ...(state.applicationId !== undefined && {
           applicationId: state.applicationId,
         }),
+        ...(state.identity !== undefined && { identity: state.identity }),
+        ...(state.contact !== undefined && { contact: state.contact }),
+        ...(state.risk !== undefined && { risk: state.risk }),
       }),
     },
   ),

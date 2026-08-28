@@ -1,4 +1,9 @@
-export type WizardPrerequisite = 'vehicle' | 'coverage' | 'auth';
+export type WizardPrerequisite =
+  | 'vehicle'
+  | 'coverage'
+  | 'auth'
+  | 'identity'
+  | 'contact';
 
 export type WizardDraftSnapshot = Readonly<
   Partial<Record<WizardPrerequisite, unknown>>
@@ -26,9 +31,21 @@ export const wizardSteps = [
     implemented: true,
   },
   {
-    key: 'details',
-    path: '/details',
+    key: 'personal',
+    path: '/personal',
     requires: ['vehicle', 'coverage', 'auth'],
+    implemented: true,
+  },
+  {
+    key: 'contact',
+    path: '/contact',
+    requires: ['vehicle', 'coverage', 'auth', 'identity'],
+    implemented: true,
+  },
+  {
+    key: 'driving',
+    path: '/driving',
+    requires: ['vehicle', 'coverage', 'auth', 'identity', 'contact'],
     implemented: true,
   },
   {
@@ -53,9 +70,17 @@ const prerequisiteRedirects: Record<WizardPrerequisite, string> = {
   vehicle: '/vehicle',
   coverage: '/coverage',
   auth: '/register',
+  identity: '/personal',
+  contact: '/contact',
 };
 
 const sealPath = '/confirmation';
+
+export function wizardPrerequisiteSnapshot(
+  sources: Record<WizardPrerequisite, unknown>,
+): WizardDraftSnapshot {
+  return sources;
+}
 
 export function guardRedirectPath(
   pathname: string,

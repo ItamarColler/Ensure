@@ -23,7 +23,7 @@ interface PremiumSummaryProps {
 
 const rowPadding = {
   tight: { paddingBlock: '5px', paddingInline: '6.5px' },
-  medium: { paddingBlock: '9px', paddingInline: '6.5px' },
+  medium: { paddingBlock: '4px', paddingInline: '6.5px' },
 };
 
 export function PremiumSummary({
@@ -39,7 +39,7 @@ export function PremiumSummary({
       <Typography
         component="p"
         sx={{
-          fontSize: '9.7px',
+          fontSize: '18px', 
           fontWeight: 700,
           letterSpacing: '0.1em',
           color: 'text.secondary',
@@ -61,7 +61,7 @@ export function PremiumSummary({
           >
             <Typography
               component="span"
-              sx={{ fontSize: '10.5px', fontWeight: 400, color: 'text.secondary' }}
+              sx={{ fontSize: '16px', fontWeight: 400, color: 'text.secondary' }}
             >
               {row.label}
             </Typography>
@@ -69,7 +69,7 @@ export function PremiumSummary({
             <Typography
               component="span"
               sx={{
-                fontSize: '10.5px',
+                fontSize: '16px',
                 fontWeight: 700,
                 color: 'text.primary',
                 minInlineSize: 0,
@@ -91,13 +91,13 @@ export function PremiumSummary({
         sx={{
           borderBlockStart: 1,
           borderColor: 'divider',
-          marginBlockStart: '9px',
+          marginBlockStart: '4px',
           paddingBlockStart: '9px',
         }}
       >
         <Typography
           component="p"
-          sx={{ fontSize: '10.5px', fontWeight: 400, color: 'text.secondary' }}
+          sx={{ fontSize: '16px', fontWeight: 400, color: 'text.secondary' }}
         >
           {premiumLabel}
         </Typography>
@@ -117,7 +117,7 @@ export function PremiumSummary({
         <Typography
           component="p"
           sx={{
-            fontSize: '9.7px',
+            fontSize: '12.7px',
             color: 'text.secondary',
             marginBlockStart: '5px',
           }}

@@ -18,6 +18,9 @@ function currentDraft(): DraftStore {
     clearVehicle: unexercisedAction,
     setCoverage: unexercisedAction,
     setApplicationId: unexercisedAction,
+    setIdentity: unexercisedAction,
+    setContact: unexercisedAction,
+    setRisk: unexercisedAction,
     clearDraft: unexercisedAction,
   };
 }

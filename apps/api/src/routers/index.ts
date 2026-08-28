@@ -1,5 +1,6 @@
 import type { RouteMount } from '../http/route-mount';
 
+import applicantRouter from './applicant.router';
 import authRouter from './auth.router';
 import healthRouter from './health.router';
 import policyRouter from './policy.router';
@@ -10,4 +11,5 @@ export const routeMounts: readonly RouteMount[] = [
   { path: '/health', router: healthRouter },
   { path: '/auth', router: authRouter },
   { path: '/policy', router: policyRouter },
+  { path: '/applicant', router: applicantRouter },
 ];

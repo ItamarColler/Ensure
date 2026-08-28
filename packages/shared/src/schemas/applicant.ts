@@ -15,12 +15,18 @@ export const familyStatusSchema = z.enum(
   { error: 'familyStatusRequired' },
 );
 
-export const applicantDetailsSchema = z.object({
+export const applicantIdentitySchema = z.object({
   firstName: z.string().trim().min(1, 'firstNameRequired'),
   lastName: z.string().trim().min(1, 'lastNameRequired'),
-  address: z.string().trim().min(1, 'addressRequired'),
   nationalId: nationalIdSchema,
+});
+
+export const applicantContactSchema = z.object({
   phone: israeliMobileSchema,
+  address: z.string().trim().min(1, 'addressRequired'),
+});
+
+export const applicantRiskSchema = z.object({
   driversCount: z
     .number({ error: 'driversCountRequired' })
     .int()
@@ -29,6 +35,22 @@ export const applicantDetailsSchema = z.object({
   familyStatus: familyStatusSchema,
 });
 
+export const applicantDetailsSchema = applicantIdentitySchema
+  .extend(applicantContactSchema.shape)
+  .extend(applicantRiskSchema.shape);
+
+export const applicantStepAcceptedSchema = z.object({
+  valid: z.literal(true),
+});
+
 export type FamilyStatus = z.infer<typeof familyStatusSchema>;
 
+export type ApplicantIdentity = z.infer<typeof applicantIdentitySchema>;
+
+export type ApplicantContact = z.infer<typeof applicantContactSchema>;
+
+export type ApplicantRisk = z.infer<typeof applicantRiskSchema>;
+
 export type ApplicantDetails = z.infer<typeof applicantDetailsSchema>;
+
+export type ApplicantStepAccepted = z.infer<typeof applicantStepAcceptedSchema>;

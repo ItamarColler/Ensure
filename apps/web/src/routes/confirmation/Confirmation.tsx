@@ -21,14 +21,14 @@ function ContactRow({ label, children }: ContactRowProps) {
     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '6.5px' }}>
       <Typography
         component="span"
-        sx={{ fontSize: '10.5px', color: 'text.secondary' }}
+        sx={{ fontSize: '16px', color: 'text.secondary' }}
       >
         {label}
       </Typography>
 
       <Typography
         component="span"
-        sx={{ fontSize: '10.5px', color: 'text.primary', minInlineSize: 0 }}
+        sx={{ fontSize: '16px', color: 'text.primary', minInlineSize: 0 }}
       >
         {children}
       </Typography>
@@ -99,48 +99,61 @@ export function Confirmation() {
   ];
 
   return (
-    <Stack spacing="9px">
+    <Stack spacing="4px">
       <Stack spacing="9px" sx={{ alignItems: 'center' }}>
-        <Box
-          sx={{
-            inlineSize: 44,
-            blockSize: 44,
-            borderRadius: '50%',
-            backgroundColor: 'primary.light',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ alignItems: 'center', justifyContent: 'center' }}
         >
-          <CheckRounded sx={{ color: 'primary.main' }} />
-        </Box>
+          <Typography component="h1" sx={{ fontSize: '18px', fontWeight: 700 }}>
+            {t('policy:title')}
+          </Typography>
 
-        <Typography component="h1" sx={{ fontSize: '18px', fontWeight: 700 }}>
-          {t('policy:title')}
-        </Typography>
+          <Box
+            sx={{
+              inlineSize: 32,
+              blockSize: 32,
+              flex: '0 0 auto',
+              borderRadius: '50%',
+              backgroundColor: 'primary.light',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <CheckRounded fontSize="small" sx={{ color: 'primary.main' }} />
+          </Box>
+        </Stack>
 
         <Typography variant="body2" color="text.secondary">
           {t('policy:subtitle')}
         </Typography>
 
-        <Typography
-          component="p"
-          sx={{ fontSize: '10.5px', color: 'text.secondary' }}
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ alignItems: 'baseline', justifyContent: 'center' }}
         >
-          {t('policy:policyNumberLabel')}
-        </Typography>
+          <Typography
+            component="p"
+            sx={{ fontSize: '16px', color: 'text.secondary' }}
+          >
+            {t('policy:policyNumberLabel')}
+          </Typography>
 
-        <Typography
-          component="p"
-          sx={{
-            fontSize: '18px',
-            fontWeight: 700,
-            color: 'text.primary',
-            fontVariantNumeric: 'tabular-nums',
-          }}
-        >
-          <NumericInline>{policy.policyNumber}</NumericInline>
-        </Typography>
+          <Typography
+            component="p"
+            sx={{
+              fontSize: '18px',
+              fontWeight: 700,
+              color: 'text.primary',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            <NumericInline>{policy.policyNumber}</NumericInline>
+          </Typography>
+        </Stack>
       </Stack>
 
       <PremiumSummary
@@ -162,12 +175,12 @@ export function Confirmation() {
         <Stack spacing="5px">
           <Typography
             component="p"
-            sx={{ fontSize: '9.7px', color: 'text.secondary' }}
+            sx={{ fontSize: '12.7px', color: 'text.secondary' }}
           >
             {t('policy:contactTitle')}
           </Typography>
 
-          <Typography component="p" sx={{ fontSize: '11.5px', fontWeight: 700 }}>
+          <Typography component="p" sx={{ fontSize: '16px', fontWeight: 700 }}>
             {t('policy:contactCompany')}
           </Typography>
 
@@ -188,7 +201,7 @@ export function Confirmation() {
 
           <Typography
             component="p"
-            sx={{ fontSize: '9.7px', color: 'text.secondary' }}
+            sx={{ fontSize: '12.7px', color: 'text.secondary' }}
           >
             {t('policy:contactPlaceholderNote')}
           </Typography>

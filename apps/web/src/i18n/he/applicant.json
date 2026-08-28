@@ -51,5 +51,6 @@
     "driversCountRequired": "יש לבחור מספר נהגים",
     "familyStatusRequired": "יש לבחור מצב משפחתי"
   },
-  "blankHelper": " "
+  "blankHelper": " ",
+  "continueCta": "המשך"
 }

@@ -7,7 +7,9 @@
     "vehicle": "רכב",
     "coverage": "כיסוי ביטוחי",
     "register": "הרשמה / כניסה",
-    "details": "פרטים אישיים",
+    "personal": "פרטים מזהים",
+    "contact": "פרטי התקשרות",
+    "driving": "נתוני הנהיגה",
     "confirmation": "אישור"
   },
   "wizard": {
