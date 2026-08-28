@@ -6,7 +6,8 @@ information forms backed by an Express/TypeScript API, a self-hosted Postgres
 
 ## Live
 
-<https://164.90.160.169.sslip.io>
+Not currently deployed. The stack is self-contained: `docker compose up` brings up the full
+application, and a public instance can be provisioned on request.
 
 ## Prerequisites
 
