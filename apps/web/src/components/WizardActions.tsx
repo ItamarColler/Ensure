@@ -12,6 +12,7 @@ interface WizardActionsProps {
   pending?: boolean;
   backLabel?: ReactNode;
   onBack?: () => void;
+  showBack?: boolean;
 }
 
 export function WizardActions({
@@ -19,6 +20,7 @@ export function WizardActions({
   pending,
   backLabel,
   onBack,
+  showBack,
 }: WizardActionsProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -48,14 +50,16 @@ export function WizardActions({
         {submitLabel}
       </PendingButton>
 
-      <Button
-        type="button"
-        variant="text"
-        onClick={goBack}
-        sx={{ color: 'text.secondary' }}
-      >
-        {backLabel ?? t('wizard.back')}
-      </Button>
+      {showBack !== false && (
+        <Button
+          type="button"
+          variant="text"
+          onClick={goBack}
+          sx={{ color: 'text.secondary' }}
+        >
+          {backLabel ?? t('wizard.back')}
+        </Button>
+      )}
     </Stack>
   );
 }

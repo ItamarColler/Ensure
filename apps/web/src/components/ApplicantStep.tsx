@@ -21,6 +21,7 @@ interface ApplicantStepProps {
   error: unknown;
   onRetry: () => void;
   onSubmit: (event: BaseSyntheticEvent) => Promise<void>;
+  showBack?: boolean;
   children?: ReactNode;
 }
 
@@ -31,6 +32,7 @@ export function ApplicantStep({
   error,
   onRetry,
   onSubmit,
+  showBack,
   children,
 }: ApplicantStepProps) {
   const { t } = useTranslation();
@@ -42,7 +44,7 @@ export function ApplicantStep({
       }}
       noValidate
     >
-      <Stack spacing={4}>
+      <Stack spacing={4} sx={{ paddingInline: { xs: 0, sm: '5%' } }}>
         <Stack spacing={1}>
           <Typography variant="h6" component="h1">
             {heading}
@@ -63,7 +65,11 @@ export function ApplicantStep({
 
         <Stack spacing={6}>{children}</Stack>
 
-        <WizardActions submitLabel={submitLabel} pending={pending} />
+        <WizardActions
+          submitLabel={submitLabel}
+          pending={pending}
+          {...(showBack !== undefined && { showBack })}
+        />
       </Stack>
     </form>
   );

@@ -359,7 +359,8 @@ export function AuthPanel() {
       variant="outlined"
       sx={{
         padding: 3,
-        blockSize: 380,
+        minBlockSize: 480,
+        flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
       }}

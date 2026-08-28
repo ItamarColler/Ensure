@@ -74,6 +74,7 @@ export function Personal() {
         }
       }}
       onSubmit={submit}
+      showBack={false}
     >
       <Controller
         name="firstName"
